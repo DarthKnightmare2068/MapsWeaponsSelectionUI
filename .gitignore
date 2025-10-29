@@ -1,0 +1,67 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Bb]eepcache/
+
+# Keep only when asset tracked
+!**/*.meta
+
+# IDE
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.pidb
+*.suo
+*.unityproj
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.DotSettings.user
+
+# Reports
+sysinfo.txt
+*.stacktrace
+
+# Platform builds
+*.apk
+*.aab
+*.xcodeproj
+*.xcworkspace
+*.xcuserstate
+*.xcuserdatad/
+
+# Packages
+*.unitypackage
+
+# Gradle/iOS/Android
+.gradle/
+DerivedData/
+*.keystore
+*.jks
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Addressables/Resources generated
+Assets/AddressableAssetsData/*/*.bin*
+Assets/TextMesh Pro/Resources/*.asset
+ServerData/
+
+# Unity Collab/Crash
+Assets/Collab/*
+UnityCrashHandler64.exe
+
+# Generated input system file
+Assets/InputSystem_Actions.cs
