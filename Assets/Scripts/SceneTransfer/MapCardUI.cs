@@ -13,6 +13,7 @@ public class MapCardUI : MonoBehaviour
 
 	private void Awake()
 	{
+		// Auto-find Button component if not assigned
 		if (mapButton == null)
 		{
 			mapButton = GetComponent<Button>();
@@ -24,17 +25,20 @@ public class MapCardUI : MonoBehaviour
 		mapData = data;
 		sceneLoader = loader;
 
+		// Set map name text
 		if (mapNameText != null)
 		{
 			mapNameText.text = mapData.MapName;
 		}
 
+		// Set map image if available
 		if (mapImage != null && mapData.MapImage != null)
 		{
 			mapImage.sprite = mapData.MapImage;
 			mapImage.gameObject.SetActive(true);
 		}
 
+		// Setup button (locked cards are non-interactable)
 		if (mapButton != null)
 		{
 			mapButton.interactable = !mapData.IsLocked;
@@ -45,6 +49,7 @@ public class MapCardUI : MonoBehaviour
 
 	private void OnMapCardClicked()
 	{
+		// Load the scene associated with this map card
 		if (mapData != null && sceneLoader != null)
 		{
 			sceneLoader.LoadSceneByName(mapData.SceneName);
@@ -53,6 +58,7 @@ public class MapCardUI : MonoBehaviour
 
 	public void UpdateCard(MapData data)
 	{
+		// Update card with new map data
 		Initialize(data, sceneLoader);
 	}
 }

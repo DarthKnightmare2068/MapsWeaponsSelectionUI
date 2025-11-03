@@ -6,10 +6,15 @@ public class MapCardManager : MonoBehaviour
 	[SerializeField] private GameObject mapCardPrefab;
 	[SerializeField] private UIButtonSceneLoader sceneLoader;
 	[SerializeField] private List<MapData> mapsData = new List<MapData>();
+
 	
-	[Header("Card Positioning")]
-	[SerializeField] private Vector2 firstCardPosition = new Vector2(365f, -45f);
-	[SerializeField] private float horizontalSpacing = 700f;
+	[Header("Layout Settings")]
+	[SerializeField] private float cardSpacing = 700f;
+	[SerializeField] private float leftPadding = 375f;
+	[SerializeField] private float rightPadding = 120f;
+	
+	[Header("Testing")]
+	[SerializeField] private int numberOfMaps = 3;
 
 	private Transform cardContainer;
 	private List<MapCardUI> instantiatedCards = new List<MapCardUI>();
@@ -22,7 +27,7 @@ public class MapCardManager : MonoBehaviour
 	
 	private void SetupCardContainer()
 	{
-		// Use Canvas directly as container
+		// Find the Content object inside Scroll View
 		Canvas canvas = GetComponentInParent<Canvas>();
 		if (canvas == null)
 		{
@@ -30,11 +35,47 @@ public class MapCardManager : MonoBehaviour
 			return;
 		}
 		
-		// Just use the Canvas itself as the container
-		cardContainer = canvas.transform;
+		Transform content = canvas.transform.Find("Scroll View/Viewport/Content");
+		cardContainer = content != null ? content : canvas.transform;
 		
-		Debug.Log($"Using Canvas '{canvas.name}' as card container");
+		if (content == null)
+		{
+			Debug.LogWarning("Content not found! Using Canvas as container. Make sure you have: Scroll View/Viewport/Content");
+		}
 	}
+	
+	private void UpdateContentSize()
+	{
+		// Update Content width based on number of cards and card width
+		if (cardContainer == null || instantiatedCards.Count == 0) return;
+		
+		RectTransform contentRect = cardContainer.GetComponent<RectTransform>();
+		if (contentRect == null || mapCardPrefab == null) return;
+		
+		// Calculate: left padding + cards + spacing + last card width + right padding
+		// Last card X position: leftPadding + (count - 1) * cardSpacing
+		// Last card right edge: last card X + cardWidth
+		// Total width: last card right edge + rightPadding
+		float cardWidth = GetCardWidth();
+		float lastCardX = leftPadding + ((instantiatedCards.Count - 1) * cardSpacing);
+		float totalWidth = lastCardX + cardWidth + rightPadding;
+		
+		contentRect.sizeDelta = new Vector2(totalWidth, contentRect.sizeDelta.y);
+	}
+	
+	private float GetCardWidth()
+	{
+		// Get actual card width from first spawned card (accounts for any scaling)
+		if (instantiatedCards.Count > 0 && instantiatedCards[0] != null)
+		{
+			RectTransform rect = instantiatedCards[0].GetComponent<RectTransform>();
+			if (rect != null) return rect.rect.width;
+		}
+		
+		// Fallback to prefab width
+		RectTransform prefabRect = mapCardPrefab.GetComponent<RectTransform>();
+		return prefabRect != null ? prefabRect.rect.width : 252f;
+	}	
 
 	public void GenerateMapCards()
 	{
@@ -56,89 +97,79 @@ public class MapCardManager : MonoBehaviour
 			}
 		}
 
-		int cardIndex = 0;
-		foreach (MapData mapData in mapsData)
+		// Spawn all cards from Maps Data list
+		for (int i = 0; i < mapsData.Count; i++)
 		{
-			if (mapData == null) continue;
+			if (mapsData[i] == null) continue;
+			SpawnCard(mapsData[i], i);
+		}
+		
+		// Update Content size for scrolling
+		UpdateContentSize();
+	}
+	
+	private void SpawnCard(MapData mapData, int index)
+	{
+		// Instantiate card prefab inside Content container
+		GameObject cardInstance = Instantiate(mapCardPrefab, cardContainer);
+		MapCardUI cardUI = cardInstance.GetComponent<MapCardUI>();
 
-			GameObject cardInstance = Instantiate(mapCardPrefab, cardContainer);
-			MapCardUI cardUI = cardInstance.GetComponent<MapCardUI>();
+		if (cardUI == null)
+		{
+			Debug.LogWarning($"MapCardManager: MapCardUI component not found on prefab '{mapCardPrefab.name}'");
+			Destroy(cardInstance);
+			return;
+		}
 
-			if (cardUI != null)
-			{
-				cardUI.Initialize(mapData, sceneLoader);
-				instantiatedCards.Add(cardUI);
-				
-				// Position the card horizontally
-				RectTransform rectTransform = cardInstance.GetComponent<RectTransform>();
-				if (rectTransform != null)
-				{
-					float xPos = firstCardPosition.x + (cardIndex * horizontalSpacing);
-					rectTransform.anchoredPosition = new Vector2(xPos, firstCardPosition.y);
-					
-					Debug.Log($"Card {cardIndex} positioned at: ({xPos}, {firstCardPosition.y})");
-				}
-				
-				cardIndex++;
-			}
-			else
-			{
-				Debug.LogWarning($"MapCardManager: MapCardUI component not found on prefab '{mapCardPrefab.name}'");
-			}
+		// Initialize card with map data
+		cardUI.Initialize(mapData, sceneLoader);
+		instantiatedCards.Add(cardUI);
+		
+		// Position card horizontally (first card at middle-left of Content)
+		RectTransform rectTransform = cardInstance.GetComponent<RectTransform>();
+		if (rectTransform != null)
+		{
+			float xPos = leftPadding + (index * cardSpacing);
+			rectTransform.anchoredPosition = new Vector2(xPos, 0f); // Y = 0 for vertical center
 		}
 	}
 
 	public void AddMap(MapData mapData)
 	{
-		if (mapData == null) return;
+		// Dynamically add a new map card at runtime
+		if (mapData == null || mapCardPrefab == null || cardContainer == null) return;
 
 		mapsData.Add(mapData);
-
-		if (mapCardPrefab != null && cardContainer != null)
-		{
-			GameObject cardInstance = Instantiate(mapCardPrefab, cardContainer);
-			MapCardUI cardUI = cardInstance.GetComponent<MapCardUI>();
-
-			if (cardUI != null && sceneLoader != null)
-			{
-				cardUI.Initialize(mapData, sceneLoader);
-				instantiatedCards.Add(cardUI);
-				
-				// Position the card horizontally
-				RectTransform rectTransform = cardInstance.GetComponent<RectTransform>();
-				if (rectTransform != null)
-				{
-					int cardIndex = instantiatedCards.Count - 1;
-					float xPos = firstCardPosition.x + (cardIndex * horizontalSpacing);
-					rectTransform.anchoredPosition = new Vector2(xPos, firstCardPosition.y);
-				}
-			}
-		}
+		SpawnCard(mapData, mapsData.Count - 1);
+		UpdateContentSize();
 	}
 
 	public void ClearCards()
 	{
+		// Remove all spawned card instances
 		foreach (MapCardUI card in instantiatedCards)
 		{
-			if (card != null)
-			{
-				Destroy(card.gameObject);
-			}
+			if (card != null) Destroy(card.gameObject);
 		}
 		instantiatedCards.Clear();
 	}
-	
 
 	public void RefreshCards()
 	{
+		// Regenerate all cards from Maps Data
 		GenerateMapCards();
 	}
 
 	private void OnValidate()
 	{
-		if (mapsData.Count == 0)
+		// Auto-generate test maps based on numberOfMaps
+		if (mapsData.Count != numberOfMaps)
 		{
-			mapsData.Add(new MapData("Test Map", "Map_1"));
+			mapsData.Clear();
+			for (int i = 0; i < numberOfMaps; i++)
+			{
+				mapsData.Add(new MapData($"Map {i + 1}", $"Map_{i + 1}"));
+			}
 		}
 	}
 }

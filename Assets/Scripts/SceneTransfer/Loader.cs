@@ -4,32 +4,32 @@ using UnityEngine.SceneManagement;
 
 public static class Loader
 {
-    private static Action onLoaderCallback;
+	private static Action onLoaderCallback;
 
-    public enum Scene
-    {
-        Menu,
-        MapMenu
-    }
+	public enum Scene
+	{
+		Menu,
+		MapMenu
+	}
 
+	// Load scene with callback system (for loading screens)
+	public static void Load(Scene scene)
+	{
+		// Set the Loader callback action to load the target scene
+		onLoaderCallback = () =>
+		{
+			SceneManager.LoadScene(scene.ToString());
+		};
+	}
 
-    public static void Load(Scene scene)
-    {   
-        // Set the Loader callback action to load the target scene
-       onLoaderCallback = () =>
-       {
-        SceneManager.LoadScene(scene.ToString());
-       };
-    }
-
-    public static void LoaderCallback()
-    {
-        // Triggered after the 1st update lets to refresh scene
-        // Excececute loader callback action to load the target scene
-       if (onLoaderCallback != null)
-       {
-            onLoaderCallback();
-            onLoaderCallback = null;
-       }
-    }
+	// Called after first frame update to refresh scene
+	public static void LoaderCallback()
+	{
+		// Execute loader callback action to load the target scene
+		if (onLoaderCallback != null)
+		{
+			onLoaderCallback();
+			onLoaderCallback = null;
+		}
+	}
 }

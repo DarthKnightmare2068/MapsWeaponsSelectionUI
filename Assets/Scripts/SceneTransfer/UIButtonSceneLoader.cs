@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class UIButtonSceneLoader : MonoBehaviour
 {
+	// Load specific scenes (for button OnClick events)
 	public void LoadMenu()
 	{
 		SceneManager.LoadScene("Menu");
@@ -28,6 +29,7 @@ public class UIButtonSceneLoader : MonoBehaviour
 		SceneManager.LoadScene("Map_3");
 	}
 
+	// Generic method to load any scene by name
 	public void LoadSceneByName(string sceneName)
 	{
 		if (!string.IsNullOrEmpty(sceneName))
@@ -36,5 +38,3 @@ public class UIButtonSceneLoader : MonoBehaviour
 		}
 	}
 }
-
-
