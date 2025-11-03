@@ -37,11 +37,6 @@ public class MapCardManager : MonoBehaviour
 		
 		Transform content = canvas.transform.Find("Scroll View/Viewport/Content");
 		cardContainer = content != null ? content : canvas.transform;
-		
-		if (content == null)
-		{
-			Debug.LogWarning("Content not found! Using Canvas as container. Make sure you have: Scroll View/Viewport/Content");
-		}
 	}
 	
 	private void UpdateContentSize()
