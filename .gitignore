@@ -1,0 +1,47 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+Assets/AssetStoreTools*
+
+# Visual Studio / JetBrains
+.vs/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.csproj
+*.pidb
+*.sln
+*.sln.docstates
+*.unityproj
+*.svd
+*.tmproj
+*.booproj
+*.DotSettings.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Crashlytics
+crashlytics-build.properties
+
+# npm / yarn
+node_modules/
+
+# Gradle/Android
+.gradle/
+**/build/
+local.properties
+.cxx/
+
+# Misc
+*.log
+*.tmp
+*.temp
