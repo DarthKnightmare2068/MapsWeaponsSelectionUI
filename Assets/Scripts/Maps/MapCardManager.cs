@@ -157,13 +157,25 @@ public class MapCardManager : MonoBehaviour
 
 	private void OnValidate()
 	{
-		// Auto-generate test maps based on numberOfMaps
+		// Auto-generate test maps based on numberOfMaps, preserving existing images
 		if (mapsData.Count != numberOfMaps)
 		{
+			// Preserve existing MapData (with images) when possible
+			List<MapData> preservedData = new List<MapData>(mapsData);
 			mapsData.Clear();
+			
 			for (int i = 0; i < numberOfMaps; i++)
 			{
-				mapsData.Add(new MapData($"Map {i + 1}", $"Map_{i + 1}"));
+				// If we have preserved data for this index, reuse it (preserves images)
+				if (i < preservedData.Count && preservedData[i] != null)
+				{
+					mapsData.Add(preservedData[i]);
+				}
+				else
+				{
+					// Create new MapData only for new indices
+					mapsData.Add(new MapData($"Map {i + 1}", $"Map_{i + 1}"));
+				}
 			}
 		}
 	}

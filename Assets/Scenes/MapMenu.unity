@@ -1406,15 +1406,15 @@ MonoBehaviour:
   sceneLoader: {fileID: 1719630295}
   mapsData:
   - mapName: Dungeon Explorer
-    sceneName: Map_1
+    sceneName: Map 1
     mapImage: {fileID: 21300000, guid: 4613c2c4eafb55d4b81a82acc6abaf37, type: 3}
     isLocked: 0
   - mapName: Trap Cave
-    sceneName: Map_2
+    sceneName: Map 2
     mapImage: {fileID: 21300000, guid: 07b8c4a133988e64ea4e7f0474c18f85, type: 3}
     isLocked: 0
   - mapName: Shutter Island
-    sceneName: Map_3
+    sceneName: Map 3
     mapImage: {fileID: 21300000, guid: 26126b5ffa9377e408ce62b27a13db45, type: 3}
     isLocked: 0
   cardSpacing: 700
