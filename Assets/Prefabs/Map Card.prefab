@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 68}
-  m_SizeDelta: {x: 246, y: 94}
+  m_AnchoredPosition: {x: 0.5366, y: 68}
+  m_SizeDelta: {x: 231.6732, y: 94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7231235804822278455
 CanvasRenderer:
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -85,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5493239199887445058}
   - component: {fileID: 6073183575551333687}
+  - component: {fileID: 2927595907451685782}
   m_Layer: 5
   m_Name: Map Card
   m_TagString: Untagged
@@ -130,6 +131,14 @@ MonoBehaviour:
   mapNameText: {fileID: 5318412287173191226}
   mapButton: {fileID: 1875416608685050255}
   mapImage: {fileID: 9028511136441670057}
+--- !u!222 &2927595907451685782
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882689974057488120}
+  m_CullTransparentMesh: 1
 --- !u!1 &1350060595554834108
 GameObject:
   m_ObjectHideFlags: 0
