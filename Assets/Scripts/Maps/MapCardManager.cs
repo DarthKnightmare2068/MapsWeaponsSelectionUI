@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MapCardManager : MonoBehaviour
 {
@@ -7,11 +8,13 @@ public class MapCardManager : MonoBehaviour
 	[SerializeField] private UIButtonSceneLoader sceneLoader;
 	[SerializeField] private List<MapData> mapsData = new List<MapData>();
 
-	
 	[Header("Layout Settings")]
 	[SerializeField] private float cardSpacing = 700f;
 	[SerializeField] private float leftPadding = 375f;
 	[SerializeField] private float rightPadding = 120f;
+	
+	[Header("Lock Settings")]
+	public float lockedCardAlpha = 0.3f; // Alpha value for locked cards (0.3 = 30% opacity)
 	
 	[Header("Testing")]
 	[SerializeField] private int numberOfMaps = 3;
@@ -68,8 +71,13 @@ public class MapCardManager : MonoBehaviour
 		}
 		
 		// Fallback to prefab width
-		RectTransform prefabRect = mapCardPrefab.GetComponent<RectTransform>();
-		return prefabRect != null ? prefabRect.rect.width : 252f;
+		if (mapCardPrefab != null)
+		{
+			RectTransform prefabRect = mapCardPrefab.GetComponent<RectTransform>();
+			if (prefabRect != null) return prefabRect.rect.width;
+		}
+		
+		return 252f; // Default fallback width
 	}	
 
 	public void GenerateMapCards()
@@ -117,7 +125,7 @@ public class MapCardManager : MonoBehaviour
 		}
 
 		// Initialize card with map data
-		cardUI.Initialize(mapData, sceneLoader);
+		cardUI.Initialize(mapData, sceneLoader, lockedCardAlpha);
 		instantiatedCards.Add(cardUI);
 		
 		// Position card horizontally (first card at middle-left of Content)
@@ -174,7 +182,10 @@ public class MapCardManager : MonoBehaviour
 				else
 				{
 					// Create new MapData only for new indices
-					mapsData.Add(new MapData($"Map {i + 1}", $"Map_{i + 1}"));
+					// Default localization keys based on index (match Unity localization table keys)
+					string[] localizationKeys = { "mapCard.DungeonExplorer", "mapCard.TrapCave", "mapCard.ShutterIsland" };
+					string localizationKey = i < localizationKeys.Length ? localizationKeys[i] : $"Map_{i + 1}";
+					mapsData.Add(new MapData($"Map {i + 1}", localizationKey, $"Map_{i + 1}"));
 				}
 			}
 		}
