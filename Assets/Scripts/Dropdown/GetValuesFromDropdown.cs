@@ -4,16 +4,19 @@ using UnityEngine.UI;
 
 public class GetValuesFromDropdown : MonoBehaviour
 {
-    [SerializeField] private TMP_Dropdown dropdown;
-    [SerializeField] private string placeholderText = "Choose level"; // Shown until user picks an option
-    [SerializeField] private bool showPlaceholderOnStart = true; // Show placeholder in caption only (not in list)
-
-    private bool isPlaceholderActive = false; // Track if we're showing placeholder
-
+    [SerializeField] private CustomTMPDropdown customDropdown;
+    [SerializeField] private TMP_Dropdown dropdown; // Keep for backward compatibility, but prefer CustomTMPDropdown
+    
     private void Awake()
     {
-        // Auto-wire the TMP_Dropdown if not assigned
-        if (dropdown == null)
+        // Try to get CustomTMPDropdown first
+        if (customDropdown == null)
+        {
+            customDropdown = GetComponent<CustomTMPDropdown>();
+        }
+        
+        // Fallback to TMP_Dropdown for backward compatibility
+        if (customDropdown == null && dropdown == null)
         {
             dropdown = GetComponent<TMP_Dropdown>();
         }
@@ -21,84 +24,81 @@ public class GetValuesFromDropdown : MonoBehaviour
 
     private void Start()
     {
-        if (dropdown == null) return;
-
-        if (showPlaceholderOnStart)
+        // Subscribe to custom dropdown value changes
+        if (customDropdown != null)
         {
-            // Show placeholder in caption only, without adding it to the options list
-            SetPlaceholderCaption();
+            customDropdown.OnValueChanged += OnDropdownValueChanged;
         }
-
-        // Subscribe to value changes to handle when user selects an option
-        dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+        // Fallback to regular dropdown
+        else if (dropdown != null)
+        {
+            dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+        }
     }
 
     private void OnDestroy()
     {
         // Unsubscribe to prevent memory leaks
-        if (dropdown != null)
+        if (customDropdown != null)
+        {
+            customDropdown.OnValueChanged -= OnDropdownValueChanged;
+        }
+        else if (dropdown != null)
         {
             dropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
-        }
-    }
-
-    private void LateUpdate()
-    {
-        // Keep placeholder text visible until user makes a selection
-        if (isPlaceholderActive && dropdown != null && dropdown.captionText != null)
-        {
-            // Continuously override caption text to keep placeholder visible
-            // This prevents dropdown from updating caption automatically
-            if (dropdown.captionText.text != placeholderText)
-            {
-                dropdown.captionText.text = placeholderText;
-            }
         }
     }
 
     // Handle dropdown value changes
     private void OnDropdownValueChanged(int value)
     {
-        // If placeholder was active, disable it and let dropdown show normal selection
-        if (isPlaceholderActive)
+        // Value can be -1 for unselected state (CustomTMPDropdown) or 0+ for regular dropdown
+        if (value == -1)
         {
-            isPlaceholderActive = false;
-            // Dropdown will automatically update caption to show selected option
-        }
-    }
-
-    // Set placeholder text in caption without adding it to the options list
-    private void SetPlaceholderCaption()
-    {
-        if (dropdown == null || dropdown.captionText == null) return;
-
-        // Set caption text to placeholder
-        dropdown.captionText.text = placeholderText;
-        isPlaceholderActive = true;
-
-        // Set value to 0 but prevent caption from updating
-        // LateUpdate will keep overriding the caption text
-        if (dropdown.options.Count > 0)
-        {
-            dropdown.SetValueWithoutNotify(0);
-        }
-    }
-
-    public void GetValues()
-    {
-        // Get the selected value when user picks an option
-        if (dropdown == null) return;
-        
-        if (dropdown.value < 0 || dropdown.options.Count == 0)
-        {
-            // No valid selection
+            Debug.Log("Dropdown: No selection (placeholder active)");
             return;
         }
-
-        int selectedIndex = dropdown.value; // Real selection (0 or higher)
-        Debug.Log("Dropdown selected index: " + selectedIndex);
-        Debug.Log("Selected option text: " + dropdown.options[selectedIndex].text);
+        
+        Debug.Log("Dropdown selected index: " + value);
+        
+        if (customDropdown != null && customDropdown.Dropdown != null)
+        {
+            if (value >= 0 && value < customDropdown.Dropdown.options.Count)
+            {
+                Debug.Log("Selected option text: " + customDropdown.Dropdown.options[value].text);
+            }
+        }
+        else if (dropdown != null)
+        {
+            if (value >= 0 && value < dropdown.options.Count)
+            {
+                Debug.Log("Selected option text: " + dropdown.options[value].text);
+            }
+        }
     }
-    
-    // Note: Colors/hover visuals are controlled by the Dropdown Template's Item Selectable/Image.
+
+    // Get the selected value when user picks an option
+    public void GetValues()
+    {
+        if (customDropdown != null)
+        {
+            if (!customDropdown.HasSelection())
+            {
+                Debug.Log("Dropdown: No selection made (placeholder active)");
+                return;
+            }
+            
+            int selectedIndex = customDropdown.Value;
+            Debug.Log("Dropdown selected index: " + selectedIndex);
+            Debug.Log("Selected option text: " + customDropdown.GetSelectedText());
+        }
+        else if (dropdown != null)
+        {
+            if (dropdown.options.Count == 0) return;
+
+            int selectedIndex = dropdown.value;
+            Debug.Log("Dropdown selected index: " + selectedIndex);
+            Debug.Log("Selected option text: " + dropdown.options[selectedIndex].text);
+        }
+    }
 }

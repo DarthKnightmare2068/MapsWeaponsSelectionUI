@@ -61,13 +61,6 @@ public class LocaleSetter : MonoBehaviour
         }
     }
 
-    // Just wait for initialization without loading saved locale
-    private IEnumerator WaitForInitialization()
-    {
-        yield return LocalizationSettings.InitializationOperation;
-        isInitialized = true;
-    }
-
     // Generic setter (use this in Button OnClick with a string parameter)
     public void SetLocale(string localeCode)
     {
