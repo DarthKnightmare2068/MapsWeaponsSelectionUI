@@ -76,11 +76,6 @@ public class CustomTMPDropdown : MonoBehaviour
         
         // Subscribe to dropdown's value changes
         dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
-    }
-    
-    private void Start()
-    {
-        if (dropdown == null) return;
         
         if (showPlaceholderOnStart)
         {

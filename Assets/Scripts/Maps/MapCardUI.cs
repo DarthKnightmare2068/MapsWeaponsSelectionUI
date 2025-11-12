@@ -16,6 +16,8 @@ public class MapCardUI : MonoBehaviour
 	private LocalizedString localizedString;
 	private CanvasGroup canvasGroup; // Used to fade entire card
 	private float lockedCardAlpha; // Alpha value for locked cards (set from MapCardManager)
+	private CustomTMPDropdown levelDropdown; // Reference to the level dropdown on this card
+	private ChooseLevelWarning warning; // Reference to the warning component
 
 	private void Awake()
 	{
@@ -31,6 +33,11 @@ public class MapCardUI : MonoBehaviour
 		{
 			canvasGroup = gameObject.AddComponent<CanvasGroup>();
 		}
+		
+		// Find the level dropdown in this card
+		levelDropdown = GetComponentInChildren<CustomTMPDropdown>();
+		
+		// Warning object is in the scene, not in prefab - will be found when needed
 	}
 
 	private void OnDestroy()
@@ -85,11 +92,64 @@ public class MapCardUI : MonoBehaviour
 
 	private void OnMapCardClicked()
 	{
-		// Load the scene associated with this map card
+		// Check level selection before loading
+		if (!CheckAndLoadScene())
+		{
+			// Level not selected - warning is shown, don't load scene
+			return;
+		}
+	}
+	
+	// Public method to be called from play button - checks level selection before loading
+	public void OnPlayButtonClicked()
+	{
+		CheckAndLoadScene();
+	}
+	
+	// Check if level is selected and load scene if valid
+	// Returns true if scene was loaded, false if level not selected
+	private bool CheckAndLoadScene()
+	{
+		// Find dropdown and warning if not already found
+		if (levelDropdown == null)
+		{
+			levelDropdown = GetComponentInChildren<CustomTMPDropdown>();
+		}
+		if (warning == null)
+		{
+			// Find the warning object in the scene (not in prefab, but in scene)
+			// Search including inactive objects since the warning starts inactive
+			ChooseLevelWarning[] warnings = FindObjectsByType<ChooseLevelWarning>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+			if (warnings != null && warnings.Length > 0)
+			{
+				warning = warnings[0];
+			}
+			
+			if (warning == null)
+			{
+				Debug.LogError("MapCardUI: ChooseLevelWarning not found in scene! Make sure the warning object with ChooseLevelWarning script exists in the scene.");
+			}
+		}
+		
+		// Check if level is selected
+		if (levelDropdown != null && !levelDropdown.HasSelection())
+		{
+			// No level selected - show warning and prevent scene loading
+			if (warning != null)
+			{
+				// Pass this Map Card to the warning so it knows which dropdown to check
+				warning.CheckLevelSelection(this);
+			}
+			return false;
+		}
+		
 		if (mapData != null && sceneLoader != null)
 		{
 			sceneLoader.LoadSceneByName(mapData.SceneName);
+			return true;
 		}
+		
+		return false;
 	}
 
 	private void UpdateText(string translatedText)

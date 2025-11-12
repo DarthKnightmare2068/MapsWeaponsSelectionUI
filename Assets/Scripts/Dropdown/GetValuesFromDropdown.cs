@@ -55,26 +55,11 @@ public class GetValuesFromDropdown : MonoBehaviour
         // Value can be -1 for unselected state (CustomTMPDropdown) or 0+ for regular dropdown
         if (value == -1)
         {
-            Debug.Log("Dropdown: No selection (placeholder active)");
             return;
         }
         
-        Debug.Log("Dropdown selected index: " + value);
-        
-        if (customDropdown != null && customDropdown.Dropdown != null)
-        {
-            if (value >= 0 && value < customDropdown.Dropdown.options.Count)
-            {
-                Debug.Log("Selected option text: " + customDropdown.Dropdown.options[value].text);
-            }
-        }
-        else if (dropdown != null)
-        {
-            if (value >= 0 && value < dropdown.options.Count)
-            {
-                Debug.Log("Selected option text: " + dropdown.options[value].text);
-            }
-        }
+        // Dropdown value changed - handle as needed
+        // (Logs removed for production)
     }
 
     // Get the selected value when user picks an option
@@ -84,21 +69,20 @@ public class GetValuesFromDropdown : MonoBehaviour
         {
             if (!customDropdown.HasSelection())
             {
-                Debug.Log("Dropdown: No selection made (placeholder active)");
                 return;
             }
             
+            // Get selected values (logs removed for production)
             int selectedIndex = customDropdown.Value;
-            Debug.Log("Dropdown selected index: " + selectedIndex);
-            Debug.Log("Selected option text: " + customDropdown.GetSelectedText());
+            string selectedText = customDropdown.GetSelectedText();
         }
         else if (dropdown != null)
         {
             if (dropdown.options.Count == 0) return;
 
+            // Get selected values (logs removed for production)
             int selectedIndex = dropdown.value;
-            Debug.Log("Dropdown selected index: " + selectedIndex);
-            Debug.Log("Selected option text: " + dropdown.options[selectedIndex].text);
+            string selectedText = dropdown.options[selectedIndex].text;
         }
     }
 }

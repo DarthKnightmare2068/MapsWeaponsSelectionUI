@@ -1,0 +1,201 @@
+using UnityEngine;
+using System.Collections;
+
+public class ChooseLevelWarning : MonoBehaviour
+{
+    private CustomTMPDropdown dropdown;
+    private CanvasGroup canvasGroup;
+    private Coroutine fadeCoroutine;
+    private MapCardUI currentMapCard; // The Map Card that triggered this warning
+    
+    [SerializeField] private float displayDuration = 1f; // Time to show before fading
+    [SerializeField] private float fadeDuration = 0.5f; // Time to fade out
+    
+    // Awake is called when the script instance is being loaded
+    void Awake()
+    {
+        // Get or add CanvasGroup for fading
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+        
+        // Configure CanvasGroup for proper visibility
+        canvasGroup.alpha = 1f; // Start fully visible
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+        
+        // Deactivate the object initially
+        gameObject.SetActive(false);
+    }
+    
+    private void OnDestroy()
+    {
+        // Unsubscribe to prevent memory leaks
+        if (dropdown != null)
+        {
+            dropdown.OnValueChanged -= OnDropdownValueChanged;
+        }
+    }
+    
+    private void OnDropdownValueChanged(int value)
+    {
+        // When a level is selected (value >= 0), hide the warning
+        if (value >= 0)
+        {
+            HideWarning();
+        }
+    }
+    
+    // Method to check if level is selected and show warning if not
+    // Can be called with a specific MapCardUI to check that card's dropdown
+    // Returns true if level is selected (can proceed), false if not (warning shown)
+    public bool CheckLevelSelection(MapCardUI mapCard = null)
+    {
+        // Find the Map Card that triggered this (passed as parameter or find the one that called)
+        if (mapCard != null)
+        {
+            currentMapCard = mapCard;
+        }
+        else if (currentMapCard == null)
+        {
+            // Try to find the Map Card that has the play button that was just pressed
+            // Find all Map Cards and check which one is active/interactable
+            MapCardUI[] allMapCards = FindObjectsByType<MapCardUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (allMapCards.Length > 0)
+            {
+                // Use the first active one, or the first one found
+                foreach (MapCardUI card in allMapCards)
+                {
+                    if (card.gameObject.activeInHierarchy)
+                    {
+                        currentMapCard = card;
+                        break;
+                    }
+                }
+                if (currentMapCard == null)
+                {
+                    currentMapCard = allMapCards[0];
+                }
+            }
+        }
+        
+        // Find the dropdown from the current Map Card
+        if (currentMapCard != null)
+        {
+            dropdown = currentMapCard.GetComponentInChildren<CustomTMPDropdown>();
+            if (dropdown != null)
+            {
+                // Subscribe to this dropdown's changes
+                dropdown.OnValueChanged -= OnDropdownValueChanged; // Remove old subscription
+                dropdown.OnValueChanged += OnDropdownValueChanged; // Add new subscription
+            }
+        }
+        
+        if (dropdown == null)
+        {
+            Debug.LogWarning("ChooseLevelWarning: CustomTMPDropdown not found in any Map Card!");
+            return true; // Allow to proceed if dropdown not found
+        }
+        
+        // Check if a level is selected
+        if (!dropdown.HasSelection())
+        {
+            // No level selected - show warning
+            ShowWarning();
+            return false;
+        }
+        
+        // Level is selected - hide warning and allow to proceed
+        HideWarning();
+        return true;
+    }
+    
+    // Show the warning with fade effect
+    private void ShowWarning()
+    {
+        // Stop any existing fade coroutine
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+        
+        // Activate the object first
+        gameObject.SetActive(true);
+        
+        // Ensure all children are also active
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+        }
+        
+        // Ensure CanvasGroup is properly configured for visibility
+        if (canvasGroup == null)
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+        canvasGroup.alpha = 1f;
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+        
+        // Force update to ensure visibility
+        Canvas.ForceUpdateCanvases();
+        
+        // Start fade out after display duration
+        if (gameObject.activeInHierarchy)
+        {
+            fadeCoroutine = StartCoroutine(FadeOutAfterDelay());
+        }
+    }
+    
+    // Coroutine to fade out after delay
+    private IEnumerator FadeOutAfterDelay()
+    {
+        // Wait for display duration
+        yield return new WaitForSeconds(displayDuration);
+        
+        // Fade out
+        if (canvasGroup != null)
+        {
+            float elapsed = 0f;
+            float startAlpha = canvasGroup.alpha;
+            
+            while (elapsed < fadeDuration)
+            {
+                elapsed += Time.deltaTime;
+                canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsed / fadeDuration);
+                yield return null;
+            }
+            
+            canvasGroup.alpha = 0f;
+        }
+        
+        // Deactivate after fade
+        gameObject.SetActive(false);
+        fadeCoroutine = null;
+    }
+    
+    // Public method to hide the warning (can be called when level is selected)
+    public void HideWarning()
+    {
+        // Stop any fade coroutine
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+        
+        // Immediately hide
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+        }
+        gameObject.SetActive(false);
+    }
+}
