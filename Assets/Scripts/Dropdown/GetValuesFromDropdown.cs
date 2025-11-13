@@ -6,6 +6,7 @@ public class GetValuesFromDropdown : MonoBehaviour
 {
     [SerializeField] private CustomTMPDropdown customDropdown;
     [SerializeField] private TMP_Dropdown dropdown; // Keep for backward compatibility, but prefer CustomTMPDropdown
+    [SerializeField] private TextMeshProUGUI infoText; // Single text component to display map info
     
     private void Awake()
     {
@@ -55,11 +56,62 @@ public class GetValuesFromDropdown : MonoBehaviour
         // Value can be -1 for unselected state (CustomTMPDropdown) or 0+ for regular dropdown
         if (value == -1)
         {
+            // Clear info text when unselected
+            if (infoText != null)
+            {
+                infoText.text = "";
+            }
             return;
         }
         
-        // Dropdown value changed - handle as needed
-        // (Logs removed for production)
+        // Get the selected option text
+        string selectedText = GetSelectedOptionText();
+        if (string.IsNullOrEmpty(selectedText))
+        {
+            return;
+        }
+        
+        // Update info text based on selection
+        UpdateInfoText(selectedText);
+    }
+    
+    // Get the selected option text from dropdown
+    private string GetSelectedOptionText()
+    {
+        if (customDropdown != null)
+        {
+            return customDropdown.GetSelectedText();
+        }
+        else if (dropdown != null && dropdown.options.Count > 0 && dropdown.value >= 0 && dropdown.value < dropdown.options.Count)
+        {
+            return dropdown.options[dropdown.value].text;
+        }
+        return string.Empty;
+    }
+    
+    // Update the info text based on the selected option
+    private void UpdateInfoText(string selectedOptionText)
+    {
+        if (infoText == null) return;
+        
+        string combinedText = "";
+        
+        // Check which option was selected and build the combined string
+        if (selectedOptionText.Contains("City Disaster (Normal)"))
+        {
+            combinedText = "Small Map (20'-30')\n\nMin team Player: 3\n\nUnlimited Kit";
+        }
+        else if (selectedOptionText.Contains("Universe Disaster (Superhard)"))
+        {
+            combinedText = "Big Map (30'-40')\n\nMin team Player: 5\n\nLimited Kit";
+        }
+        else
+        {
+            // Default fallback (can be customized)
+            combinedText = "Big Map\n\nMin team Player:\n\nLimited / Unlimited Kit";
+        }
+        
+        infoText.text = combinedText;
     }
 
     // Get the selected value when user picks an option
