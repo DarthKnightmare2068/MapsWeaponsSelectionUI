@@ -1096,6 +1096,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cdff536746d9e745a747d17dee02c0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayDuration: 1
+  fadeDuration: 0.5
 --- !u!1 &1372544967
 GameObject:
   m_ObjectHideFlags: 0
@@ -1709,7 +1711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c57f203a8ea22348a1eda71b9834f14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapCardPrefab: {fileID: 7971666863710694249, guid: ba0f7f5818fde73449575c50ae056ee8, type: 3}
+  mapCardPrefab: {fileID: 6617702278623175132, guid: ba0f7f5818fde73449575c50ae056ee8, type: 3}
   sceneLoader: {fileID: 1719630295}
   mapsData:
   - mapName: Map 1

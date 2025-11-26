@@ -33,13 +33,13 @@ public class PlayButtonLevelCheck : MonoBehaviour
     
     private void OnButtonClicked()
     {
-        // If MapCardUI is found, use its method which handles level checking
+        // If MapCardUI is found, use its method which now delegates to GameStartService
         if (mapCardUI != null)
         {
             mapCardUI.OnPlayButtonClicked();
             return;
         }
-        
+
         // Fallback: Try to find and check ChooseLevelWarning in scene (including inactive)
         ChooseLevelWarning[] warnings = FindObjectsByType<ChooseLevelWarning>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         ChooseLevelWarning warning = (warnings != null && warnings.Length > 0) ? warnings[0] : null;

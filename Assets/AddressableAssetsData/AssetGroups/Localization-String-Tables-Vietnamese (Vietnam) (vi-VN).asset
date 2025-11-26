@@ -22,6 +22,13 @@ MonoBehaviour:
     - Locale-vi-VN
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bc95cdbe362b8249b9e7b8cd787a123
+    m_Address: Map level_vi-VN
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi-VN
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c41bcce72d3e81f4a811956c94d80789
     m_Address: Map Labels_vi-VN
     m_ReadOnly: 1

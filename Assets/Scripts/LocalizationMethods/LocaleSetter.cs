@@ -6,33 +6,13 @@ using System.Collections;
 // Attach this to a persistent object (e.g., Menu Canvas / SceneManager)
 public class LocaleSetter : MonoBehaviour
 {
-    [SerializeField] private bool alwaysStartWithEnglish = true; // Always set English on scene start (ignores saved preference)
     private const string PlayerPrefsKey = "locale";
     private bool isInitialized = false;
 
     private void Start()
     {
-        if (alwaysStartWithEnglish)
-        {
-            // Always start with English, regardless of saved preference
-            StartCoroutine(InitializeAndSetEnglish());
-        }
-        else
-        {
-            // Load saved locale preference
-            StartCoroutine(InitializeAndLoadSavedLocale());
-        }
-    }
-
-    // Wait for LocalizationSettings to initialize, then always set English
-    private IEnumerator InitializeAndSetEnglish()
-    {
-        // Wait for LocalizationSettings to be ready
-        yield return LocalizationSettings.InitializationOperation;
-        isInitialized = true;
-
-        // Always set English on scene start (don't load saved preference)
-        SetLocale("en-US");
+        // Always load saved locale preference on scene start
+        StartCoroutine(InitializeAndLoadSavedLocale());
     }
 
     // Wait for LocalizationSettings to initialize, then load saved locale

@@ -46,24 +46,30 @@ public class UIButtonSceneLoader : MonoBehaviour
 		MapCardUI mapCardUI = GetComponentInParent<MapCardUI>();
 		if (mapCardUI != null)
 		{
-			// Use MapCardUI's method which handles level checking
+			// Use MapCardUI's method which now delegates to GameStartService
 			mapCardUI.OnPlayButtonClicked();
 			return;
 		}
 		
-		// Fallback: Try to find ChooseLevelWarning and CustomTMPDropdown
+		// Fallback: Try to use GameStartService directly if we can locate required pieces
+		CustomTMPDropdown dropdown = GetComponentInParent<CustomTMPDropdown>();
 		ChooseLevelWarning warning = GetComponentInParent<ChooseLevelWarning>();
-		if (warning != null)
+
+		if (dropdown != null || warning != null)
 		{
-			bool canProceed = warning.CheckLevelSelection();
-			if (!canProceed)
+			// Without a MapData reference this acts as a minimal level check:
+			// if a dropdown exists and is unselected, show warning and abort.
+			if (dropdown != null && !dropdown.HasSelection())
 			{
-				// Warning shown, don't load
+				if (warning != null)
+				{
+					warning.CheckLevelSelection();
+				}
 				return;
 			}
 		}
 		
-		// No checks found or level is selected - proceed with loading
+		// No card context or checks found (or level is selected) - proceed with loading
 		LoadSceneByName(sceneName);
 	}
 	

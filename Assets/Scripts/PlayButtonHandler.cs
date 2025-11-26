@@ -39,27 +39,33 @@ public class PlayButtonHandler : MonoBehaviour
     // Method to be called when play button is clicked
     public void OnPlayButtonClicked()
     {
-        // Try MapCardUI first (if available) - it handles level checking internally
+        // Prefer using the map card's centralized logic when available
         if (mapCardUI != null)
         {
             mapCardUI.OnPlayButtonClicked();
             return;
         }
-        
-        // Fallback: Check level selection manually if MapCardUI not available
-        if (warning != null)
+
+        // If there is no MapCardUI (generic play button), delegate to GameStartService
+        CustomTMPDropdown dropdown = null;
+        MapCardUI card = GetComponentInParent<MapCardUI>();
+        if (card != null)
         {
-            bool canProceed = warning.CheckLevelSelection();
-            if (!canProceed)
-            {
-                // Warning is shown, don't proceed
-                return;
-            }
+            // Try to locate dropdown on the same card for level selection
+            dropdown = card.GetComponentInChildren<CustomTMPDropdown>();
         }
-        
-        // Level is selected or no warning component - proceed with loading scene
+
+        // When using a generic scene name, MapData isn't available.
+        // In that case this handler behaves like before, only checking warning and scene name.
         if (sceneLoader != null && !string.IsNullOrEmpty(sceneName))
         {
+            // If a warning exists and dropdown is present, reuse its validation.
+            if (warning != null && dropdown != null && !dropdown.HasSelection())
+            {
+                warning.CheckLevelSelection(card);
+                return;
+            }
+
             sceneLoader.LoadSceneByName(sceneName);
         }
         else if (sceneLoader != null)
@@ -71,25 +77,14 @@ public class PlayButtonHandler : MonoBehaviour
     // Overload to load a specific scene
     public void OnPlayButtonClicked(string sceneToLoad)
     {
-        // Try MapCardUI first (if available) - it handles level checking internally
+        // Prefer using the map card's centralized logic when available
         if (mapCardUI != null)
         {
             mapCardUI.OnPlayButtonClicked();
             return;
         }
-        
-        // Fallback: Check level selection manually if MapCardUI not available
-        if (warning != null)
-        {
-            bool canProceed = warning.CheckLevelSelection();
-            if (!canProceed)
-            {
-                // Warning is shown, don't proceed
-                return;
-            }
-        }
-        
-        // Level is selected or no warning component - proceed with loading scene
+
+        // Generic fallback: minimal validation and direct load
         if (sceneLoader != null && !string.IsNullOrEmpty(sceneToLoad))
         {
             sceneLoader.LoadSceneByName(sceneToLoad);

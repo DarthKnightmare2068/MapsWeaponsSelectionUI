@@ -92,23 +92,19 @@ public class MapCardUI : MonoBehaviour
 
 	private void OnMapCardClicked()
 	{
-		// Check level selection before loading
-		if (!CheckAndLoadScene())
-		{
-			// Level not selected - warning is shown, don't load scene
-			return;
-		}
+		// Delegate core game-start rules to central service
+		TryStartGame();
 	}
 	
-	// Public method to be called from play button - checks level selection before loading
+	// Public method to be called from play button - uses the same shared logic
 	public void OnPlayButtonClicked()
 	{
-		CheckAndLoadScene();
+		TryStartGame();
 	}
 	
-	// Check if level is selected and load scene if valid
-	// Returns true if scene was loaded, false if level not selected
-	private bool CheckAndLoadScene()
+	// Shared path for starting the game from this card (card click or play button).
+	// All validation and scene loading is delegated to GameStartService.
+	private void TryStartGame()
 	{
 		// Find dropdown and warning if not already found
 		if (levelDropdown == null)
@@ -130,26 +126,8 @@ public class MapCardUI : MonoBehaviour
 				Debug.LogError("MapCardUI: ChooseLevelWarning not found in scene! Make sure the warning object with ChooseLevelWarning script exists in the scene.");
 			}
 		}
-		
-		// Check if level is selected
-		if (levelDropdown != null && !levelDropdown.HasSelection())
-		{
-			// No level selected - show warning and prevent scene loading
-			if (warning != null)
-			{
-				// Pass this Map Card to the warning so it knows which dropdown to check
-				warning.CheckLevelSelection(this);
-			}
-			return false;
-		}
-		
-		if (mapData != null && sceneLoader != null)
-		{
-			sceneLoader.LoadSceneByName(mapData.SceneName);
-			return true;
-		}
-		
-		return false;
+
+		GameStartService.TryStartGame(mapData, levelDropdown, warning, sceneLoader, this);
 	}
 
 	private void UpdateText(string translatedText)
