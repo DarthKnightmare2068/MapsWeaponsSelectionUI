@@ -12,7 +12,7 @@ public class MapCardUI : MonoBehaviour
 	[SerializeField] private Image lockImageDisplay; // Image component to display lock icon (assign in prefab)
 
 	private MapData mapData;
-	private UIButtonSceneLoader sceneLoader;
+	private SceneLoader sceneLoader;
 	private LocalizedString localizedString;
 	private CanvasGroup canvasGroup; // Used to fade entire card
 	private float lockedCardAlpha; // Alpha value for locked cards (set from MapCardManager)
@@ -49,7 +49,7 @@ public class MapCardUI : MonoBehaviour
 		}
 	}
 
-	public void Initialize(MapData data, UIButtonSceneLoader loader, float cardAlpha = 0.3f)
+	public void Initialize(MapData data, SceneLoader loader, float cardAlpha = 0.3f)
 	{
 		mapData = data;
 		sceneLoader = loader;

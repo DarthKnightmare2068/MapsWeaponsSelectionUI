@@ -18,7 +18,7 @@ public static class GameStartService
         MapData mapData,
         CustomTMPDropdown levelDropdown,
         ChooseLevelWarning warning,
-        UIButtonSceneLoader sceneLoader,
+        SceneLoader sceneLoader,
         MapCardUI mapCard = null)
     {
         if (mapData == null)
@@ -56,7 +56,7 @@ public static class GameStartService
 
         if (sceneLoader == null)
         {
-            Debug.LogError("GameStartService: UIButtonSceneLoader is not assigned, cannot load scene.");
+            Debug.LogError("GameStartService: SceneLoader is not assigned, cannot load scene.");
             return false;
         }
 

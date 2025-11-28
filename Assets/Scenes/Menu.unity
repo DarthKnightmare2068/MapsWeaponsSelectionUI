@@ -1419,7 +1419,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 20927613}
-        m_TargetAssemblyTypeName: UIButtonSceneLoader, Assembly-CSharp
+        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
         m_MethodName: LoadMapMenu
         m_Mode: 1
         m_Arguments:

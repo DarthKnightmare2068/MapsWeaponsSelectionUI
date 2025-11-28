@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class MapCardManager : MonoBehaviour
 {
 	[SerializeField] private GameObject mapCardPrefab;
-	[SerializeField] private UIButtonSceneLoader sceneLoader;
+	[SerializeField] private SceneLoader sceneLoader;
 	[SerializeField] private List<MapData> mapsData = new List<MapData>();
 
 	[Header("Layout Settings")]
@@ -92,10 +92,10 @@ public class MapCardManager : MonoBehaviour
 
 		if (sceneLoader == null)
 		{
-			sceneLoader = FindFirstObjectByType<UIButtonSceneLoader>();
+			sceneLoader = FindFirstObjectByType<SceneLoader>();
 			if (sceneLoader == null)
 			{
-				Debug.LogError("MapCardManager: UIButtonSceneLoader not found in scene!");
+				Debug.LogError("MapCardManager: SceneLoader not found in scene!");
 				return;
 			}
 		}

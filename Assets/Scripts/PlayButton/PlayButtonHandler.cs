@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayButtonHandler : MonoBehaviour
 {
     [SerializeField] private ChooseLevelWarning warning;
-    [SerializeField] private UIButtonSceneLoader sceneLoader;
+    [SerializeField] private SceneLoader sceneLoader;
     [SerializeField] private string sceneName;
     [SerializeField] private MapCardUI mapCardUI; // Optional: if using MapCardUI's scene loading
     
@@ -26,7 +26,7 @@ public class PlayButtonHandler : MonoBehaviour
         // Try to find scene loader if not assigned
         if (sceneLoader == null)
         {
-            sceneLoader = FindFirstObjectByType<UIButtonSceneLoader>();
+            sceneLoader = FindFirstObjectByType<SceneLoader>();
         }
         
         // Try to find MapCardUI if not assigned (for alternative scene loading)

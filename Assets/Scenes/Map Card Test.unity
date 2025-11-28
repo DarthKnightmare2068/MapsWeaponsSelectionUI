@@ -2736,6 +2736,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   customDropdown: {fileID: 0}
   dropdown: {fileID: 6652967679216094846}
+  infoText: {fileID: 0}
 --- !u!222 &8667183430218858576
 CanvasRenderer:
   m_ObjectHideFlags: 0

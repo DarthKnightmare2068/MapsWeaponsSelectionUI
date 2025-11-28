@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UIButtonSceneLoader : MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
 	// Load specific scenes (for button OnClick events)
 	public void LoadMenu()
