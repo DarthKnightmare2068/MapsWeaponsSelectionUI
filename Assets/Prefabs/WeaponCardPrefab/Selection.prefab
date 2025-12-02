@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0.000015258789}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1.389801, y: -1.4722977}
+  m_SizeDelta: {x: -141.7571, y: -117.6963}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3007010084176266933
 CanvasRenderer:
@@ -220,8 +220,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5647446458623389478}
+  - component: {fileID: 8445866280094759785}
   m_Layer: 5
-  m_Name: WeaponChooseCard
+  m_Name: Selection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -245,9 +246,26 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -668, y: 152}
+  m_AnchoredPosition: {x: -668, y: -370}
   m_SizeDelta: {x: 425, y: 209.0614}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8445866280094759785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4234572997153353271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476854c0104aa3c4983fb89e3dea722b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponImage: {fileID: 6299595850482626566}
+  weaponNameText: {fileID: 0}
+  selectedHighlight: {fileID: 4234572997153353271}
+  usedStatusText: {fileID: 3824418916413857810}
+  rentOutStatusText: {fileID: 4275991847670583795}
 --- !u!1 &5496365881506705067
 GameObject:
   m_ObjectHideFlags: 0

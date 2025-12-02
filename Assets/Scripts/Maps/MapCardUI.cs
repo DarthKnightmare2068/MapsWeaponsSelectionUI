@@ -92,6 +92,12 @@ public class MapCardUI : MonoBehaviour
 
 	private void OnMapCardClicked()
 	{
+		// Prevent clicking locked maps
+		if (mapData != null && mapData.IsLocked)
+		{
+			return;
+		}
+		
 		// Delegate core game-start rules to central service
 		TryStartGame();
 	}
@@ -99,6 +105,12 @@ public class MapCardUI : MonoBehaviour
 	// Public method to be called from play button - uses the same shared logic
 	public void OnPlayButtonClicked()
 	{
+		// Prevent play button from working on locked maps
+		if (mapData != null && mapData.IsLocked)
+		{
+			return;
+		}
+		
 		TryStartGame();
 	}
 	
@@ -154,9 +166,10 @@ public class MapCardUI : MonoBehaviour
 			// Fade entire card when locked, full opacity when unlocked
 			canvasGroup.alpha = mapData.IsLocked ? lockedCardAlpha : 1f;
 			
-			// Optionally disable interactions on entire card when locked
+			// Disable UI interactions (buttons, etc.) when locked, but keep raycasts enabled
+			// so the scroll view can still detect drag events for scrolling
 			canvasGroup.interactable = !mapData.IsLocked;
-			canvasGroup.blocksRaycasts = !mapData.IsLocked;
+			canvasGroup.blocksRaycasts = true; // Always allow raycasts so scroll view can detect drags
 		}
 
 		// Show/hide lock icon

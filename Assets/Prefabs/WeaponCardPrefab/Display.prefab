@@ -487,8 +487,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8873877813427457687}
+  - component: {fileID: 2115109435103161064}
   m_Layer: 5
-  m_Name: WeaponCardDisplay
+  m_Name: Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -515,6 +516,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2115109435103161064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4795967225729151971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37abee5725bae6429fe45738b484d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponImage: {fileID: 1240360053360501913}
+  weaponNameText: {fileID: 6101133118271346513}
+  button1: {fileID: 6866769380568696588}
+  button2: {fileID: 4519600386986542084}
 --- !u!1 &6034727656934879335
 GameObject:
   m_ObjectHideFlags: 0

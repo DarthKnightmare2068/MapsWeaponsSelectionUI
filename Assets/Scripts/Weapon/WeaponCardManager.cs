@@ -4,88 +4,85 @@ using UnityEngine.UI;
 
 public class WeaponCardManager : MonoBehaviour
 {
-	[SerializeField] private GameObject weaponCardPrefab;
+	[SerializeField] private GameObject weaponCardSelectionPrefab; // Prefab for selectable cards in scroll view
 	[SerializeField] private List<WeaponData> weaponsData = new List<WeaponData>();
-	[SerializeField] private WeaponCardDisplay weaponCardDisplay; // big image panel
-	[SerializeField] private WeaponCardData weaponCardData;       // stats panel
+	[SerializeField] private GameObject weaponCardDisplayPrefab; // Prefab for big image panel (spawned in canvas)
+	[SerializeField] private GameObject weaponCardDataPrefab; // Prefab for stats panel (spawned in canvas)
 
-	[Header("Layout Settings")]
-	[SerializeField] private float cardSpacing = 90f;
-	[SerializeField] private float leftPadding = -275f;
-	[SerializeField] private float rightPadding = 120f;
-	
 	[Header("Testing")]
 	[SerializeField] private int numberOfWeapons = 5;
 
 	private Transform cardContainer;
+	private Canvas canvas;
 	private List<WeaponCardSelection> instantiatedCards = new List<WeaponCardSelection>();
 	private WeaponCardSelection currentSelection;
+	private WeaponCardDisplay instantiatedDisplay; // Reference to spawned display
+	private WeaponCardData instantiatedData; // Reference to spawned data panel
 
 	private void Start()
 	{
 		SetupCardContainer();
+		SpawnDisplayAndData();
 		GenerateWeaponCards();
 	}
-	
+
 	private void SetupCardContainer()
 	{
-		// Find the Content object inside Scroll View
-		Canvas canvas = GetComponentInParent<Canvas>();
+		// Find the Canvas
+		canvas = GetComponentInParent<Canvas>();
 		if (canvas == null)
 		{
 			Debug.LogError("WeaponCardManager: Must be a child of Canvas!");
 			return;
 		}
 		
+		// Find the Content object inside Scroll View for weapon card selections
 		Transform content = canvas.transform.Find("Scroll View/Viewport/Content");
 		cardContainer = content != null ? content : canvas.transform;
 	}
-	
-	private void UpdateContentSize()
+
+	private void SpawnDisplayAndData()
 	{
-		// Update Content width based on number of cards and card width
-		if (cardContainer == null || instantiatedCards.Count == 0) return;
-		
-		RectTransform contentRect = cardContainer.GetComponent<RectTransform>();
-		if (contentRect == null || weaponCardPrefab == null) return;
-		
-		// Calculate: left padding + cards + spacing + last card width + right padding
-		// Last card X position: leftPadding + (count - 1) * cardSpacing
-		// Last card right edge: last card X + cardWidth
-		// Total width: last card right edge + rightPadding
-		float cardWidth = GetCardWidth();
-		float lastCardX = leftPadding + ((instantiatedCards.Count - 1) * cardSpacing);
-		float totalWidth = lastCardX + cardWidth + rightPadding;
-		
-		contentRect.sizeDelta = new Vector2(totalWidth, contentRect.sizeDelta.y);
-	}
-	
-	private float GetCardWidth()
-	{
-		// Get actual card width from first spawned card (accounts for any scaling)
-		if (instantiatedCards.Count > 0 && instantiatedCards[0] != null)
+		// Spawn weapon card display in canvas (respects prefab position)
+		if (weaponCardDisplayPrefab != null && canvas != null)
 		{
-			RectTransform rect = instantiatedCards[0].GetComponent<RectTransform>();
-			if (rect != null) return rect.rect.width;
+			GameObject displayInstance = Instantiate(weaponCardDisplayPrefab, canvas.transform);
+			// Keep prefab's position by not modifying RectTransform
+			instantiatedDisplay = displayInstance.GetComponentInChildren<WeaponCardDisplay>();
+			if (instantiatedDisplay == null)
+			{
+				Debug.LogWarning("WeaponCardManager: WeaponCardDisplay component not found on weaponCardDisplayPrefab or its children. Make sure the prefab has the WeaponCardDisplay script component attached!");
+			}
 		}
-		
-		// Fallback to prefab width
-		if (weaponCardPrefab != null)
+		else
 		{
-			RectTransform prefabRect = weaponCardPrefab.GetComponent<RectTransform>();
-			if (prefabRect != null) return prefabRect.rect.width;
+			Debug.LogWarning("WeaponCardManager: weaponCardDisplayPrefab or canvas is not assigned!");
 		}
-		
-		return 252f; // Default fallback width
+
+		// Spawn weapon card data in canvas (respects prefab position)
+		if (weaponCardDataPrefab != null && canvas != null)
+		{
+			GameObject dataInstance = Instantiate(weaponCardDataPrefab, canvas.transform);
+			// Keep prefab's position by not modifying RectTransform
+			instantiatedData = dataInstance.GetComponentInChildren<WeaponCardData>();
+			if (instantiatedData == null)
+			{
+				Debug.LogWarning("WeaponCardManager: WeaponCardData component not found on weaponCardDataPrefab or its children. Make sure the prefab has the WeaponCardData script component attached!");
+			}
+		}
+		else
+		{
+			Debug.LogWarning("WeaponCardManager: weaponCardDataPrefab or canvas is not assigned!");
+		}
 	}
 
 	public void GenerateWeaponCards()
 	{
 		ClearCards();
 
-		if (weaponCardPrefab == null)
+		if (weaponCardSelectionPrefab == null)
 		{
-			Debug.LogError("WeaponCardManager: Weapon Card Prefab is not assigned!");
+			Debug.LogError("WeaponCardManager: Weapon Card Selection Prefab is not assigned!");
 			return;
 		}
 
@@ -101,20 +98,17 @@ public class WeaponCardManager : MonoBehaviour
 		{
 			OnWeaponCardSelected(instantiatedCards[0]);
 		}
-		
-		// Update Content size for scrolling
-		UpdateContentSize();
 	}
-	
+
 	private void SpawnCard(WeaponData weaponData, int index)
 	{
 		// Instantiate card prefab inside Content container
-		GameObject cardInstance = Instantiate(weaponCardPrefab, cardContainer);
+		GameObject cardInstance = Instantiate(weaponCardSelectionPrefab, cardContainer);
 
-		WeaponCardSelection card = cardInstance.GetComponent<WeaponCardSelection>();
+		WeaponCardSelection card = cardInstance.GetComponentInChildren<WeaponCardSelection>();
 		if (card == null)
 		{
-			Debug.LogWarning($"WeaponCardManager: WeaponCardSelection component not found on prefab '{weaponCardPrefab.name}'");
+			Debug.LogWarning($"WeaponCardManager: WeaponCardSelection component not found on prefab '{weaponCardSelectionPrefab.name}'");
 			Destroy(cardInstance);
 			return;
 		}
@@ -123,24 +117,15 @@ public class WeaponCardManager : MonoBehaviour
 
 		// Add card to instantiated cards list
 		instantiatedCards.Add(card);
-		
-		// Position card horizontally (first card at middle-left of Content)
-		RectTransform rectTransform = cardInstance.GetComponent<RectTransform>();
-		if (rectTransform != null)
-		{
-			float xPos = leftPadding + (index * cardSpacing);
-			rectTransform.anchoredPosition = new Vector2(xPos, 0f); // Y = 0 for vertical center
-		}
 	}
 
 	public void AddWeapon(WeaponData weaponData)
 	{
 		// Dynamically add a new weapon card at runtime
-		if (weaponData == null || weaponCardPrefab == null || cardContainer == null) return;
+		if (weaponData == null || weaponCardSelectionPrefab == null || cardContainer == null) return;
 
 		weaponsData.Add(weaponData);
 		SpawnCard(weaponData, weaponsData.Count - 1);
-		UpdateContentSize();
 	}
 
 	public void ClearCards()
@@ -151,6 +136,19 @@ public class WeaponCardManager : MonoBehaviour
 			if (card != null) Destroy(card.gameObject);
 		}
 		instantiatedCards.Clear();
+	}
+
+	private void OnDestroy()
+	{
+		// Clean up instantiated display and data objects
+		if (instantiatedDisplay != null)
+		{
+			Destroy(instantiatedDisplay.gameObject);
+		}
+		if (instantiatedData != null)
+		{
+			Destroy(instantiatedData.gameObject);
+		}
 	}
 
 	public void RefreshCards()
@@ -197,26 +195,20 @@ public class WeaponCardManager : MonoBehaviour
 	{
 		if (card == null) return;
 
-		// Update selection state visuals
-		if (currentSelection != null && currentSelection != card)
-		{
-			currentSelection.SetSelected(false);
-		}
-
+		// Update current selection reference (no visual highlight)
 		currentSelection = card;
-		currentSelection.SetSelected(true);
 
 		WeaponData data = currentSelection.WeaponData;
 
-		// Update big display and stats panel
-		if (weaponCardDisplay != null)
+		// Update big display and stats panel using instantiated objects
+		if (instantiatedDisplay != null)
 		{
-			weaponCardDisplay.SetWeapon(data);
+			instantiatedDisplay.SetWeapon(data, card);
 		}
 
-		if (weaponCardData != null)
+		if (instantiatedData != null)
 		{
-			weaponCardData.SetWeapon(data);
+			instantiatedData.SetWeapon(data);
 		}
 	}
 }

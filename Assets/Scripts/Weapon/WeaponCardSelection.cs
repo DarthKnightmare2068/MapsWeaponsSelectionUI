@@ -8,35 +8,35 @@ public class WeaponCardSelection : MonoBehaviour
 {
 	[SerializeField] private Image weaponImage;
 	[SerializeField] private TextMeshProUGUI weaponNameText;
-	[SerializeField] private Button selectButton;
-	[SerializeField] private GameObject selectedHighlight;
+
+	[Header("Status Text")]
+	[SerializeField] private TextMeshProUGUI usedStatusText; // "Used" status text
+	[SerializeField] private TextMeshProUGUI rentOutStatusText; // "Rent Out" status text
 
 	private WeaponData weaponData;
 	private WeaponCardManager manager;
-	private bool isSelected;
 
 	public WeaponData WeaponData => weaponData;
 
 	private void Awake()
 	{
-		if (selectButton == null)
+		// Setup card click detection (click anywhere on the card)
+		Button cardButton = GetComponent<Button>();
+		if (cardButton != null)
 		{
-			selectButton = GetComponent<Button>();
+			cardButton.onClick.AddListener(OnCardClicked);
 		}
 
-		if (selectButton != null)
-		{
-			selectButton.onClick.AddListener(OnClick);
-		}
-
-		UpdateVisualSelection(false);
+		// Initialize status texts as off
+		SetStatus(WeaponStatus.None);
 	}
 
 	private void OnDestroy()
 	{
-		if (selectButton != null)
+		Button cardButton = GetComponent<Button>();
+		if (cardButton != null)
 		{
-			selectButton.onClick.RemoveListener(OnClick);
+			cardButton.onClick.RemoveListener(OnCardClicked);
 		}
 	}
 
@@ -55,11 +55,9 @@ public class WeaponCardSelection : MonoBehaviour
 		{
 			weaponNameText.text = data != null ? data.WeaponName : string.Empty;
 		}
-
-		UpdateVisualSelection(false);
 	}
 
-	private void OnClick()
+	private void OnCardClicked()
 	{
 		if (manager != null)
 		{
@@ -67,17 +65,49 @@ public class WeaponCardSelection : MonoBehaviour
 		}
 	}
 
-	public void SetSelected(bool selected)
+	// Set weapon status: Used, Rent Out, or None
+	public void SetStatus(WeaponStatus status)
 	{
-		isSelected = selected;
-		UpdateVisualSelection(isSelected);
-	}
-
-	private void UpdateVisualSelection(bool selected)
-	{
-		if (selectedHighlight != null)
+		// Turn off both status texts first
+		if (usedStatusText != null)
 		{
-			selectedHighlight.SetActive(selected);
+			usedStatusText.gameObject.SetActive(false);
+		}
+
+		if (rentOutStatusText != null)
+		{
+			rentOutStatusText.gameObject.SetActive(false);
+		}
+
+		// Turn on the appropriate status text
+		switch (status)
+		{
+			case WeaponStatus.Used:
+				if (usedStatusText != null)
+				{
+					usedStatusText.gameObject.SetActive(true);
+				}
+				break;
+
+			case WeaponStatus.RentOut:
+				if (rentOutStatusText != null)
+				{
+					rentOutStatusText.gameObject.SetActive(true);
+				}
+				break;
+
+			case WeaponStatus.None:
+			default:
+				// Both already turned off above
+				break;
 		}
 	}
+}
+
+// Weapon status enum
+public enum WeaponStatus
+{
+	None,    // No status (both texts off)
+	Used,    // "Used" text is on
+	RentOut  // "Rent Out" text is on
 }

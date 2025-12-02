@@ -8,11 +8,45 @@ public class WeaponCardDisplay : MonoBehaviour
 	[SerializeField] private Image weaponImage;
 	[SerializeField] private TextMeshProUGUI weaponNameText;
 
-	private WeaponData currentWeapon;
+	[Header("Buttons")]
+	[SerializeField] private Button useButton; // Use button for later use
+	[SerializeField] private Button rentOutButton; // Rent out button for later use
 
-	public void SetWeapon(WeaponData data)
+	private WeaponData currentWeapon;
+	private WeaponCardSelection currentSelectedCard; // Reference to currently selected card
+
+	private void Awake()
+	{
+		// Setup buttons (for future use)
+		if (useButton != null)
+		{
+			useButton.onClick.AddListener(OnUseButtonClicked);
+		}
+
+		if (rentOutButton != null)
+		{
+			rentOutButton.onClick.AddListener(OnRentOutButtonClicked);
+		}
+	}
+
+	private void OnDestroy()
+	{
+		// Clean up button listeners
+		if (useButton != null)
+		{
+			useButton.onClick.RemoveListener(OnUseButtonClicked);
+		}
+
+		if (rentOutButton != null)
+		{
+			rentOutButton.onClick.RemoveListener(OnRentOutButtonClicked);
+		}
+	}
+
+	public void SetWeapon(WeaponData data, WeaponCardSelection selectedCard = null)
 	{
 		currentWeapon = data;
+		currentSelectedCard = selectedCard;
 
 		if (weaponImage != null)
 		{
@@ -25,6 +59,24 @@ public class WeaponCardDisplay : MonoBehaviour
 			weaponNameText.text = data != null ? data.WeaponName : string.Empty;
 		}
 	}
-}
 
+	// Button handlers
+	private void OnUseButtonClicked()
+	{
+		// Set status to "Used" on the currently selected card
+		if (currentSelectedCard != null)
+		{
+			currentSelectedCard.SetStatus(WeaponStatus.Used);
+		}
+	}
+
+	private void OnRentOutButtonClicked()
+	{
+		// Set status to "Rent Out" on the currently selected card
+		if (currentSelectedCard != null)
+		{
+			currentSelectedCard.SetStatus(WeaponStatus.RentOut);
+		}
+	}
+}
 
