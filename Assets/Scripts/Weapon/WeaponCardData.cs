@@ -8,6 +8,7 @@ using System.Linq;
 public class WeaponCardData : MonoBehaviour
 {
 	[Header("Text Elements")]
+	[SerializeField] private TextMeshProUGUI weaponNameText; // Weapon name at top of stats panel
 	[SerializeField] private TextMeshProUGUI attributesNamesText; // Left side: attribute names with \n\n spacing
 	[SerializeField] private TextMeshProUGUI attributesValuesText; // Right side: attribute values
 
@@ -91,8 +92,20 @@ public class WeaponCardData : MonoBehaviour
 
 		if (data == null)
 		{
+			// Clear weapon name and show placeholder/empty stats
+			if (weaponNameText != null)
+			{
+				weaponNameText.text = string.Empty;
+			}
+
 			SetEmptyData();
 			return;
+		}
+
+		// Set weapon name
+		if (weaponNameText != null)
+		{
+			weaponNameText.text = data.WeaponName;
 		}
 
 		// Get attribute values from WeaponData using enum
@@ -168,6 +181,12 @@ public class WeaponCardData : MonoBehaviour
 
 	private void SetEmptyData()
 	{
+		// Clear weapon name when no data
+		if (weaponNameText != null)
+		{
+			weaponNameText.text = string.Empty;
+		}
+
 		// Set attributes names (left side) - always show names even when no data
 		if (attributesNamesText != null)
 		{

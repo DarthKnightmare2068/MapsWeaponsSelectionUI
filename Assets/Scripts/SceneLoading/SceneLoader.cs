@@ -11,7 +11,7 @@ public class SceneLoader : MonoBehaviour
 
 	public void LoadMapMenu()
 	{
-		SceneManager.LoadScene("MapMenu");
+		SceneManager.LoadScene("Map Menu");
 	}
 
 	public void LoadMap1()
@@ -40,6 +40,7 @@ public class SceneLoader : MonoBehaviour
 	
 	// Load scene with level selection check (for play buttons on map cards)
 	// This method checks if a level is selected before loading
+	// NOTE: When called from Map Menu, this will go through GameStartService which loads Weapon Menu
 	public void LoadSceneWithLevelCheck(string sceneName)
 	{
 		// Try to find MapCardUI in parent hierarchy
@@ -47,11 +48,17 @@ public class SceneLoader : MonoBehaviour
 		if (mapCardUI != null)
 		{
 			// Use MapCardUI's method which now delegates to GameStartService
+			// GameStartService will store the map and load Weapon Menu instead of direct map scene
 			mapCardUI.OnPlayButtonClicked();
 			return;
 		}
 		
+		// If no MapCardUI found, this method cannot proceed properly
+		// Map card play buttons should always have MapCardUI in their hierarchy
+		Debug.LogWarning($"SceneLoader.LoadSceneWithLevelCheck: MapCardUI not found! Cannot proceed with proper flow. Scene: {sceneName}");
+		
 		// Fallback: Try to use GameStartService directly if we can locate required pieces
+		// This is a minimal fallback for edge cases, but should not be used in normal flow
 		CustomTMPDropdown dropdown = GetComponentInParent<CustomTMPDropdown>();
 		ChooseLevelWarning warning = GetComponentInParent<ChooseLevelWarning>();
 
@@ -69,7 +76,9 @@ public class SceneLoader : MonoBehaviour
 			}
 		}
 		
-		// No card context or checks found (or level is selected) - proceed with loading
+		// WARNING: Direct scene load bypasses Weapon Menu flow
+		// This should only happen in edge cases where MapCardUI is not available
+		Debug.LogWarning($"SceneLoader.LoadSceneWithLevelCheck: Bypassing Weapon Menu flow! Directly loading: {sceneName}");
 		LoadSceneByName(sceneName);
 	}
 	

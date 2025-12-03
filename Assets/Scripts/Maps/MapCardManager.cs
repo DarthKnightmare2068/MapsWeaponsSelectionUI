@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MapCardManager : MonoBehaviour
+public class MapCardManager : SpawnCardLogic<MapData, MapCardUI>
 {
 	[SerializeField] private GameObject mapCardPrefab;
 	[SerializeField] private SceneLoader sceneLoader;
@@ -14,39 +14,14 @@ public class MapCardManager : MonoBehaviour
 	[Header("Testing")]
 	[SerializeField] private int numberOfMaps = 3;
 
-	private Transform cardContainer;
-	private List<MapCardUI> instantiatedCards = new List<MapCardUI>();
-
 	private void Start()
 	{
 		SetupCardContainer();
 		GenerateMapCards();
 	}
 	
-	private void SetupCardContainer()
-	{
-		// Find the Content object inside Scroll View
-		Canvas canvas = GetComponentInParent<Canvas>();
-		if (canvas == null)
-		{
-			Debug.LogError("MapCardManager: Must be a child of Canvas!");
-			return;
-		}
-		
-		Transform content = canvas.transform.Find("Scroll View/Viewport/Content");
-		cardContainer = content != null ? content : canvas.transform;
-	}
-
 	public void GenerateMapCards()
 	{
-		ClearCards();
-
-		if (mapCardPrefab == null)
-		{
-			Debug.LogError("MapCardManager: Map Card Prefab is not assigned!");
-			return;
-		}
-
 		if (sceneLoader == null)
 		{
 			sceneLoader = FindFirstObjectByType<SceneLoader>();
@@ -57,49 +32,28 @@ public class MapCardManager : MonoBehaviour
 			}
 		}
 
-		// Spawn all cards from Maps Data list (layout group + content size fitter handle sizing)
-		for (int i = 0; i < mapsData.Count; i++)
-		{
-			if (mapsData[i] == null) continue;
-			SpawnCard(mapsData[i], i);
-		}
+		// Use shared spawn logic
+		GenerateCards(mapsData, mapCardPrefab);
 	}
 	
-	private void SpawnCard(MapData mapData, int index)
+	protected override void InitialiseCard(MapCardUI card, MapData data, int index)
 	{
-		// Instantiate card prefab inside Content container
-		GameObject cardInstance = Instantiate(mapCardPrefab, cardContainer);
-		MapCardUI cardUI = cardInstance.GetComponent<MapCardUI>();
-
-		if (cardUI == null)
-		{
-			Debug.LogWarning($"MapCardManager: MapCardUI component not found on prefab '{mapCardPrefab.name}'");
-			Destroy(cardInstance);
-			return;
-		}
-
 		// Initialize card with map data
-		cardUI.Initialize(mapData, sceneLoader, lockedCardAlpha);
-		instantiatedCards.Add(cardUI);
+		card.Initialize(data, sceneLoader, lockedCardAlpha);
 	}
 
 	public void AddMap(MapData mapData)
 	{
 		// Dynamically add a new map card at runtime
-		if (mapData == null || mapCardPrefab == null || cardContainer == null) return;
+		if (mapData == null) return;
 
 		mapsData.Add(mapData);
-		SpawnCard(mapData, mapsData.Count - 1);
+		SpawnSingleCard(mapCardPrefab, mapData, mapsData.Count - 1);
 	}
 
 	public void ClearCards()
 	{
-		// Remove all spawned card instances
-		foreach (MapCardUI card in instantiatedCards)
-		{
-			if (card != null) Destroy(card.gameObject);
-		}
-		instantiatedCards.Clear();
+		ClearSpawnedCards();
 	}
 
 	public void RefreshCards()

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class WeaponCardManager : MonoBehaviour
+public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 {
 	[SerializeField] private GameObject weaponCardSelectionPrefab; // Prefab for selectable cards in scroll view
 	[SerializeField] private List<WeaponData> weaponsData = new List<WeaponData>();
@@ -12,33 +11,26 @@ public class WeaponCardManager : MonoBehaviour
 	[Header("Testing")]
 	[SerializeField] private int numberOfWeapons = 5;
 
-	private Transform cardContainer;
 	private Canvas canvas;
-	private List<WeaponCardSelection> instantiatedCards = new List<WeaponCardSelection>();
 	private WeaponCardSelection currentSelection;
 	private WeaponCardDisplay instantiatedDisplay; // Reference to spawned display
 	private WeaponCardData instantiatedData; // Reference to spawned data panel
 
 	private void Start()
 	{
-		SetupCardContainer();
-		SpawnDisplayAndData();
-		GenerateWeaponCards();
-	}
-
-	private void SetupCardContainer()
-	{
-		// Find the Canvas
+		// Find the Canvas used for weapon UI
 		canvas = GetComponentInParent<Canvas>();
 		if (canvas == null)
 		{
 			Debug.LogError("WeaponCardManager: Must be a child of Canvas!");
 			return;
 		}
-		
-		// Find the Content object inside Scroll View for weapon card selections
-		Transform content = canvas.transform.Find("Scroll View/Viewport/Content");
-		cardContainer = content != null ? content : canvas.transform;
+
+		// Use shared container-finding logic (Scroll View/Viewport/Content)
+		SetupCardContainer();
+
+		SpawnDisplayAndData();
+		GenerateWeaponCards();
 	}
 
 	private void SpawnDisplayAndData()
@@ -78,20 +70,8 @@ public class WeaponCardManager : MonoBehaviour
 
 	public void GenerateWeaponCards()
 	{
-		ClearCards();
-
-		if (weaponCardSelectionPrefab == null)
-		{
-			Debug.LogError("WeaponCardManager: Weapon Card Selection Prefab is not assigned!");
-			return;
-		}
-
-		// Spawn all cards from Weapons Data list
-		for (int i = 0; i < weaponsData.Count; i++)
-		{
-			if (weaponsData[i] == null) continue;
-			SpawnCard(weaponsData[i], i);
-		}
+		// Use shared spawn logic
+		GenerateCards(weaponsData, weaponCardSelectionPrefab);
 
 		// Select first weapon by default
 		if (instantiatedCards.Count > 0)
@@ -100,42 +80,23 @@ public class WeaponCardManager : MonoBehaviour
 		}
 	}
 
-	private void SpawnCard(WeaponData weaponData, int index)
+	protected override void InitialiseCard(WeaponCardSelection card, WeaponData data, int index)
 	{
-		// Instantiate card prefab inside Content container
-		GameObject cardInstance = Instantiate(weaponCardSelectionPrefab, cardContainer);
-
-		WeaponCardSelection card = cardInstance.GetComponentInChildren<WeaponCardSelection>();
-		if (card == null)
-		{
-			Debug.LogWarning($"WeaponCardManager: WeaponCardSelection component not found on prefab '{weaponCardSelectionPrefab.name}'");
-			Destroy(cardInstance);
-			return;
-		}
-
-		card.Initialize(weaponData, this);
-
-		// Add card to instantiated cards list
-		instantiatedCards.Add(card);
+		card.Initialize(data, this);
 	}
 
 	public void AddWeapon(WeaponData weaponData)
 	{
 		// Dynamically add a new weapon card at runtime
-		if (weaponData == null || weaponCardSelectionPrefab == null || cardContainer == null) return;
+		if (weaponData == null) return;
 
 		weaponsData.Add(weaponData);
-		SpawnCard(weaponData, weaponsData.Count - 1);
+		SpawnSingleCard(weaponCardSelectionPrefab, weaponData, weaponsData.Count - 1);
 	}
 
 	public void ClearCards()
 	{
-		// Remove all spawned card instances
-		foreach (WeaponCardSelection card in instantiatedCards)
-		{
-			if (card != null) Destroy(card.gameObject);
-		}
-		instantiatedCards.Clear();
+		ClearSpawnedCards();
 	}
 
 	private void OnDestroy()

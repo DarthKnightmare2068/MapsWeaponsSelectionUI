@@ -7,12 +7,12 @@ using TMPro;
 public class WeaponCardSelection : MonoBehaviour
 {
 	[SerializeField] private Image weaponImage;
-	[SerializeField] private TextMeshProUGUI weaponNameText;
 
 	[Header("Status Text")]
 	[SerializeField] private TextMeshProUGUI usedStatusText; // "Used" status text
 	[SerializeField] private TextMeshProUGUI rentOutStatusText; // "Rent Out" status text
 
+	private TextMeshProUGUI weaponNameText;
 	private WeaponData weaponData;
 	private WeaponCardManager manager;
 

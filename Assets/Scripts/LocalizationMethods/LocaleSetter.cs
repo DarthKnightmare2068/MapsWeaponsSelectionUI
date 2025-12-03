@@ -59,11 +59,6 @@ public class LocaleSetter : MonoBehaviour
             LocalizationSettings.SelectedLocale = locale;
             PlayerPrefs.SetString(PlayerPrefsKey, localeCode);
             PlayerPrefs.Save();
-            Debug.Log($"LocaleSetter: Locale changed to '{localeCode}'");
-        }
-        else
-        {
-            Debug.LogWarning($"LocaleSetter: Locale '{localeCode}' not found in AvailableLocales");
         }
     }
 

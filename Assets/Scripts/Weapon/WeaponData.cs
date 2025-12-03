@@ -3,6 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class WeaponData
 {
+	[Header("Basic Info")]
 	[SerializeField] private string weaponName;
 	[SerializeField] private Sprite weaponImage;
 	

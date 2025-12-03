@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-// Big weapon preview: shows image and name of the currently selected weapon
+// Big weapon preview: shows image of the currently selected weapon
 public class WeaponCardDisplay : MonoBehaviour
 {
 	[SerializeField] private Image weaponImage;
-	[SerializeField] private TextMeshProUGUI weaponNameText;
 
 	[Header("Buttons")]
 	[SerializeField] private Button useButton; // Use button for later use
@@ -52,11 +50,6 @@ public class WeaponCardDisplay : MonoBehaviour
 		{
 			weaponImage.sprite = data != null ? data.WeaponImage : null;
 			weaponImage.enabled = weaponImage.sprite != null;
-		}
-
-		if (weaponNameText != null)
-		{
-			weaponNameText.text = data != null ? data.WeaponName : string.Empty;
 		}
 	}
 

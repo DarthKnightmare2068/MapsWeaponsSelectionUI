@@ -56,7 +56,9 @@ public class PlayButtonHandler : MonoBehaviour
         }
 
         // When using a generic scene name, MapData isn't available.
-        // In that case this handler behaves like before, only checking warning and scene name.
+        // NOTE: This fallback bypasses the Map Menu -> Weapon Menu -> Map Scene flow
+        // It should only be used for non-map-card play buttons (e.g., generic menu buttons)
+        // For map cards, MapCardUI should always be present and this code should not execute
         if (sceneLoader != null && !string.IsNullOrEmpty(sceneName))
         {
             // If a warning exists and dropdown is present, reuse its validation.
@@ -66,6 +68,9 @@ public class PlayButtonHandler : MonoBehaviour
                 return;
             }
 
+            // WARNING: Direct scene load - this bypasses Weapon Menu flow
+            // Only use this for non-map-card buttons
+            Debug.LogWarning($"PlayButtonHandler: Direct scene load bypassing Weapon Menu flow! Scene: {sceneName}");
             sceneLoader.LoadSceneByName(sceneName);
         }
         else if (sceneLoader != null)
@@ -85,8 +90,11 @@ public class PlayButtonHandler : MonoBehaviour
         }
 
         // Generic fallback: minimal validation and direct load
+        // NOTE: This bypasses the Map Menu -> Weapon Menu -> Map Scene flow
+        // Should only be used for non-map-card buttons
         if (sceneLoader != null && !string.IsNullOrEmpty(sceneToLoad))
         {
+            Debug.LogWarning($"PlayButtonHandler: Direct scene load bypassing Weapon Menu flow! Scene: {sceneToLoad}");
             sceneLoader.LoadSceneByName(sceneToLoad);
         }
     }

@@ -66,7 +66,11 @@ public static class GameStartService
             return false;
         }
 
-        sceneLoader.LoadSceneByName(mapData.SceneName);
+        // Store selected map scene name for later use in Weapon Menu
+        MapSelectionManager.SetSelectedMap(mapData.SceneName);
+        
+        // Load Weapon Menu scene instead of directly loading the map scene
+        sceneLoader.LoadSceneByName("Weapon Menu");
         return true;
     }
 }

@@ -5,8 +5,8 @@ public class ScrollThumbFixed : MonoBehaviour
 {
     [SerializeField] private Scrollbar scrollbar;
     [SerializeField] private RectTransform handleRect; // Scrollbar Handle
-    [SerializeField] private float initialSize = 0.1f; // normalized 0..1 size to apply on scene start
 
+    private float initialSize = 0.05f; // normalized size to apply on scene start
     private RectTransform scrollbarRect;
 
     private void Awake()
