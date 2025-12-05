@@ -96,19 +96,61 @@ public class GetValuesFromDropdown : MonoBehaviour
         
         string combinedText = "";
         
-        // Check which option was selected and build the combined string
-        if (selectedOptionText.Contains("City Disaster (Normal)"))
+        // Use localization key for comparison instead of hardcoded text
+        if (customDropdown != null)
         {
-            combinedText = "Small Map (20'-30')\n\nMin team Player: 3\n\nUnlimited Kit";
-        }
-        else if (selectedOptionText.Contains("Universe Disaster (Superhard)"))
-        {
-            combinedText = "Big Map (30'-40')\n\nMin team Player: 5\n\nLimited Kit";
+            string localizationKey = customDropdown.GetSelectedLocalizationKey();
+            if (localizationKey == "mapLevel.Normal")
+            {
+                combinedText = "Small Map (20'-30')\n\nMin team Player: 3\n\nUnlimited Kit";
+            }
+            else if (localizationKey == "mapLevel.Superhard")
+            {
+                combinedText = "Big Map (30'-40')\n\nMin team Player: 5\n\nLimited Kit";
+            }
+            else
+            {
+                // Default fallback (can be customized)
+                combinedText = "Big Map\n\nMin team Player:\n\nLimited / Unlimited Kit";
+            }
         }
         else
         {
-            // Default fallback (can be customized)
-            combinedText = "Big Map\n\nMin team Player:\n\nLimited / Unlimited Kit";
+            // Fallback for regular dropdown - check localized strings
+            try
+            {
+                string normalText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString("Map level", "mapLevel.Normal");
+                string superhardText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString("Map level", "mapLevel.Superhard");
+                
+                if (selectedOptionText.Contains(normalText) || selectedOptionText.Contains("City Disaster"))
+                {
+                    combinedText = "Small Map (20'-30')\n\nMin team Player: 3\n\nUnlimited Kit";
+                }
+                else if (selectedOptionText.Contains(superhardText) || selectedOptionText.Contains("Universe Disaster"))
+                {
+                    combinedText = "Big Map (30'-40')\n\nMin team Player: 5\n\nLimited Kit";
+                }
+                else
+                {
+                    combinedText = "Big Map\n\nMin team Player:\n\nLimited / Unlimited Kit";
+                }
+            }
+            catch
+            {
+                // Fallback to original hardcoded check
+                if (selectedOptionText.Contains("City Disaster (Normal)"))
+                {
+                    combinedText = "Small Map (20'-30')\n\nMin team Player: 3\n\nUnlimited Kit";
+                }
+                else if (selectedOptionText.Contains("Universe Disaster (Superhard)"))
+                {
+                    combinedText = "Big Map (30'-40')\n\nMin team Player: 5\n\nLimited Kit";
+                }
+                else
+                {
+                    combinedText = "Big Map\n\nMin team Player:\n\nLimited / Unlimited Kit";
+                }
+            }
         }
         
         infoText.text = combinedText;

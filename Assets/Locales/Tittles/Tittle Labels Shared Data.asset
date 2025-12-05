@@ -19,6 +19,10 @@ MonoBehaviour:
     m_Key: mapMenu.Tille
     m_Metadata:
       m_Items: []
+  - m_Id: 10579495666311168
+    m_Key: weaponMenu.Tittle
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

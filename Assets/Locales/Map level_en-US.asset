@@ -26,6 +26,14 @@ MonoBehaviour:
     m_Localized: Universe Disaster (Superhard)
     m_Metadata:
       m_Items: []
+  - m_Id: 7642944955211776
+    m_Localized: Choose Level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7648893468139520
+    m_Localized: Disaster Level
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

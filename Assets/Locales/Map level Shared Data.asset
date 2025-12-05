@@ -16,11 +16,19 @@ MonoBehaviour:
   m_TableCollectionNameGuidString: 681edc4fd0a75e9418fe4fb5300a5aa7
   m_Entries:
   - m_Id: 25620373504
-    m_Key: mapLevel.normal
+    m_Key: mapLevel.Normal
     m_Metadata:
       m_Items: []
   - m_Id: 259666731008
     m_Key: mapLevel.Superhard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7642944955211776
+    m_Key: mapLevel.ChooseMapLevel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7648893468139520
+    m_Key: mapLevel.DisasterLevel
     m_Metadata:
       m_Items: []
   m_Metadata:

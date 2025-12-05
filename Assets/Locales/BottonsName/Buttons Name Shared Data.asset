@@ -32,7 +32,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 312904915607552
-    m_Key: BackButton
+    m_Key: languageButton.BackButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10467621599698944
+    m_Key: languageButton.DoneButton
     m_Metadata:
       m_Items: []
   m_Metadata:
