@@ -13,7 +13,7 @@ public class CustomTMPDropdown : MonoBehaviour
     [Header("Localization")]
     [SerializeField] private bool useLocalization = true;
     [SerializeField] private string placeholderLocalizationKey = "mapLevel.ChooseMapLevel";
-    [SerializeField] private string localizationTableName = "Map level";
+    [SerializeField] private string localizationTableName = "Map Level";
     
     private int internalValue = -1; // -1 means unselected
     private bool isInitialized = false;
@@ -136,12 +136,12 @@ public class CustomTMPDropdown : MonoBehaviour
         }
     }
     
-    // Localize dropdown options using Map level table
+    // Localize dropdown options using Map Level table
     private void LocalizeDropdownOptions()
     {
         if (dropdown == null || !useLocalization) return;
         
-        // Map level keys
+        // Map Level keys
         string[] levelKeys = { "mapLevel.Normal", "mapLevel.Superhard" };
         
         // Update options with localized strings

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5be51871efa6c3e4eae1703925c8f5ac, type: 3}
-  m_Name: Map Level
+  m_Name: MapInfo
   m_EditorClassIdentifier: 
-  m_SharedTableData: {fileID: 11400000, guid: 681edc4fd0a75e9418fe4fb5300a5aa7, type: 2}
+  m_SharedTableData: {fileID: 11400000, guid: 73216b88f597af540807bb3068ab564a, type: 2}
   m_Tables:
-  - {fileID: 11400000, guid: db48014258b994e4a98ffe434cb1df63, type: 2}
-  - {fileID: 11400000, guid: 6bc95cdbe362b8249b9e7b8cd787a123, type: 2}
+  - {fileID: 11400000, guid: 465b2d3a3a848df4cb30292f8e22fcdc, type: 2}
+  - {fileID: 11400000, guid: 1b515dbbd622c8e4a8ad9f0ec5cd9bd5, type: 2}
   m_Extensions: []
   m_Group: String Table
   references:

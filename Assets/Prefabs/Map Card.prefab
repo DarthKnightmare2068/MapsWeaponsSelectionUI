@@ -1132,7 +1132,7 @@ MonoBehaviour:
   showPlaceholderOnStart: 1
   useLocalization: 1
   placeholderLocalizationKey: mapLevel.ChooseMapLevel
-  localizationTableName: Map level
+  localizationTableName: Map Level
 --- !u!1 &4812431957240051966
 GameObject:
   m_ObjectHideFlags: 0

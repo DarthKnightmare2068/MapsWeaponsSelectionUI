@@ -12,9 +12,14 @@ public class WeaponCardSelection : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI usedStatusText; // "Used" status text
 	[SerializeField] private TextMeshProUGUI rentOutStatusText; // "Rent Out" status text
 
+	[Header("Frame Display")]
+	[SerializeField] private GameObject normalFrame; // Normal frame (shown when not selected)
+	[SerializeField] private GameObject glowingFrame; // Glowing frame (shown when selected)
+
 	private TextMeshProUGUI weaponNameText;
 	private WeaponData weaponData;
 	private WeaponCardManager manager;
+	private bool isSelected = false;
 
 	public WeaponData WeaponData => weaponData;
 
@@ -29,6 +34,9 @@ public class WeaponCardSelection : MonoBehaviour
 
 		// Initialize status texts as off
 		SetStatus(WeaponStatus.None);
+		
+		// Initialize frames: NormalFrame active, GlowingFrame inactive by default
+		UpdateFrameDisplay(false);
 	}
 
 	private void OnDestroy()
@@ -62,6 +70,28 @@ public class WeaponCardSelection : MonoBehaviour
 		if (manager != null)
 		{
 			manager.OnWeaponCardSelected(this);
+		}
+	}
+	
+	// Update frame display based on selection state
+	public void SetSelected(bool selected)
+	{
+		isSelected = selected;
+		UpdateFrameDisplay(selected);
+	}
+	
+	private void UpdateFrameDisplay(bool selected)
+	{
+		// Show NormalFrame when not selected, hide when selected
+		if (normalFrame != null)
+		{
+			normalFrame.SetActive(!selected);
+		}
+		
+		// Show GlowingFrame when selected, hide when not selected
+		if (glowingFrame != null)
+		{
+			glowingFrame.SetActive(selected);
 		}
 	}
 

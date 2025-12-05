@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: Map Level_vi-VN
+  m_Name: MapInfo_en-US
   m_EditorClassIdentifier: 
   m_LocaleId:
-    m_Code: vi-VN
-  m_SharedData: {fileID: 11400000, guid: 681edc4fd0a75e9418fe4fb5300a5aa7, type: 2}
+    m_Code: en-US
+  m_SharedData: {fileID: 11400000, guid: 73216b88f597af540807bb3068ab564a, type: 2}
   m_Metadata:
     m_Items: []
   m_TableData:
-  - m_Id: 25620373504
-    m_Localized: "C\u1EA5p Th\xE0nh Ph\u1ED1 (th\u01B0\u1EDDng)"
+  - m_Id: 4959232000
+    m_Localized: Small map
     m_Metadata:
       m_Items: []
-  - m_Id: 259666731008
-    m_Localized: "C\u1EA5p V\u0169 Tr\u1EE5 (si\xEAu kh\xF3)"
+  - m_Id: 12433481728
+    m_Localized: Big map
     m_Metadata:
       m_Items: []
-  - m_Id: 7642944955211776
-    m_Localized: "Ch\u1ECDn C\u1EA5p \u0110\u1ED9"
+  - m_Id: 14631297024
+    m_Localized: Min team payer
     m_Metadata:
       m_Items: []
-  - m_Id: 7648893468139520
-    m_Localized: "C\u1EA5p Th\u1EA3m H\u1ECDa"
+  - m_Id: 16908804096
+    m_Localized: Limited member
     m_Metadata:
       m_Items: []
   references:
