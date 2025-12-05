@@ -8,6 +8,8 @@ public static class LocalizationManager
 	// Table names constants
 	public const string TABLE_TITTLE_LABELS = "Tittle Labels";
 	public const string TABLE_MAP_LABELS = "Map Labels";
+	public const string TABLE_MAP_LEVEL = "Map Level";
+	public const string TABLE_MAP_INFO = "MapInfo";
 
 	// Get localized string from any table using LocalizedString
 	// Returns a LocalizedString object that can be subscribed to for auto-updates

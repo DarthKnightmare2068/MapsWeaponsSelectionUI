@@ -156,8 +156,17 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 	{
 		if (card == null) return;
 
-		// Update current selection reference (no visual highlight)
+		// Deselect previous card (set to normal frame)
+		if (currentSelection != null && currentSelection != card)
+		{
+			currentSelection.SetSelected(false);
+		}
+
+		// Update current selection reference
 		currentSelection = card;
+		
+		// Select new card (set to glowing frame)
+		currentSelection.SetSelected(true);
 
 		WeaponData data = currentSelection.WeaponData;
 

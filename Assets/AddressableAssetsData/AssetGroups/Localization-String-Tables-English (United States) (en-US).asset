@@ -22,6 +22,12 @@ MonoBehaviour:
     - Locale-en-US
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 465b2d3a3a848df4cb30292f8e22fcdc
+    m_Address: MapInfo_en-US
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en-US
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: acc7d07f516b6d347a23675afb3cc941
     m_Address: Tittle Labels_en-US
     m_ReadOnly: 1
@@ -30,7 +36,7 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db48014258b994e4a98ffe434cb1df63
-    m_Address: Map level_en-US
+    m_Address: Map Level_en-US
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en-US

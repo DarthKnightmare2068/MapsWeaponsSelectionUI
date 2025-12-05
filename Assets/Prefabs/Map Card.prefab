@@ -744,8 +744,9 @@ GameObject:
   - component: {fileID: 7165491151036905766}
   - component: {fileID: 238485526695039106}
   - component: {fileID: 5345531385157091155}
+  - component: {fileID: 8412799389853228276}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: DisasterLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -767,8 +768,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -78.1, y: 11.4}
-  m_SizeDelta: {x: 74.5905, y: 12.1096}
+  m_AnchoredPosition: {x: -57.698, y: 11.4}
+  m_SizeDelta: {x: 115.4, y: 12.1096}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &238485526695039106
 CanvasRenderer:
@@ -869,6 +870,46 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8412799389853228276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4111233737062313332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:681edc4fd0a75e9418fe4fb5300a5aa7
+    m_TableEntryReference:
+      m_KeyId: 7648893468139520
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5345531385157091155}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &4222840847924908897
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,6 +1130,9 @@ MonoBehaviour:
   dropdown: {fileID: 4660888265336592078}
   placeholderText: Choose level
   showPlaceholderOnStart: 1
+  useLocalization: 1
+  placeholderLocalizationKey: mapLevel.ChooseMapLevel
+  localizationTableName: Map Level
 --- !u!1 &4812431957240051966
 GameObject:
   m_ObjectHideFlags: 0

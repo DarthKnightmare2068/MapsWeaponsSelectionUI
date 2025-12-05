@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 8435794}
   - component: {fileID: 8435793}
   - component: {fileID: 8435792}
+  - component: {fileID: 8435795}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -240,6 +241,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8435790}
   m_CullTransparentMesh: 1
+--- !u!114 &8435795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8435790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:b94a4e536ea7d104b864c433a57c1a8f
+    m_TableEntryReference:
+      m_KeyId: 312904915607552
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1715472540}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &300936175
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +293,7 @@ GameObject:
   - component: {fileID: 300936179}
   - component: {fileID: 300936178}
   - component: {fileID: 300936177}
+  - component: {fileID: 300936180}
   m_Layer: 5
   m_Name: DoneButton
   m_TagString: Untagged
@@ -361,6 +403,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300936175}
   m_CullTransparentMesh: 1
+--- !u!114 &300936180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300936175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:b94a4e536ea7d104b864c433a57c1a8f
+    m_TableEntryReference:
+      m_KeyId: 10467621599698944
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 447982984}
+        m_TargetAssemblyTypeName: TMPro.TextMeshProUGUI, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,8 +735,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 126.80078, y: -2.5874023}
-  m_SizeDelta: {x: 23.2858, y: 19.3035}
+  m_AnchoredPosition: {x: 177.67944, y: -0.26520157}
+  m_SizeDelta: {x: 125.0431, y: 0.0222}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &447982984
 MonoBehaviour:
@@ -703,14 +785,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 53.55
-  m_fontSizeBase: 24
+  m_fontSize: 53
+  m_fontSizeBase: 53
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1187,6 +1269,7 @@ MonoBehaviour:
   backButton: {fileID: 8435790}
   doneButton: {fileID: 300936175}
   sceneLoader: {fileID: 703035679}
+  backButtonText: {fileID: 0}
 --- !u!1 &793449119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1830,8 +1913,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 126.8, y: -2.5874}
-  m_SizeDelta: {x: 23.2858, y: 19.3035}
+  m_AnchoredPosition: {x: 231.33833, y: -0.00002670288}
+  m_SizeDelta: {x: 232.3625, y: -0.000053406}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1715472540
 MonoBehaviour:
@@ -1880,14 +1963,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 57.45
-  m_fontSizeBase: 24
+  m_fontSize: 53
+  m_fontSizeBase: 53
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0

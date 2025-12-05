@@ -10,27 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: Tittle Labels Shared Data
+  m_Name: MapInfo Shared Data
   m_EditorClassIdentifier: 
-  m_TableCollectionName: Tittle Labels
-  m_TableCollectionNameGuidString: fa1287114f4650240adebe62fc1283fe
+  m_TableCollectionName: MapInfo
+  m_TableCollectionNameGuidString: 73216b88f597af540807bb3068ab564a
   m_Entries:
-  - m_Id: 14673240064
-    m_Key: mapMenu.Tille
+  - m_Id: 4959232000
+    m_Key: mapInfo.smallMap
     m_Metadata:
       m_Items: []
-  - m_Id: 10579495666311168
-    m_Key: weaponMenu.Tittle
+  - m_Id: 12433481728
+    m_Key: mapInfo.bigMap
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14631297024
+    m_Key: mapInfo.minTeamPlayer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16908804096
+    m_Key: mapInfo.limitedMemberSize
     m_Metadata:
       m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
-    rid: 9104484181509144841
+    rid: 1719053560553930997
   references:
     version: 2
     RefIds:
-    - rid: 9104484181509144841
+    - rid: 1719053560553930997
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
-        m_CustomEpoch: 1762398220861
+        m_CustomEpoch: 1764926117885

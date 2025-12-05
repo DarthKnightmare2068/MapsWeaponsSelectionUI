@@ -22,6 +22,10 @@ MonoBehaviour:
     m_Localized: PVE Choose Maps
     m_Metadata:
       m_Items: []
+  - m_Id: 10579495666311168
+    m_Localized: Equipment Statistic
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

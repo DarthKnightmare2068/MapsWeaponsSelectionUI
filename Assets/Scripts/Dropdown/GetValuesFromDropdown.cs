@@ -96,22 +96,105 @@ public class GetValuesFromDropdown : MonoBehaviour
         
         string combinedText = "";
         
-        // Check which option was selected and build the combined string
-        if (selectedOptionText.Contains("City Disaster (Normal)"))
+        // Use localization key for comparison instead of hardcoded text
+        if (customDropdown != null)
         {
-            combinedText = "Small Map (20'-30')\n\nMin team Player: 3\n\nUnlimited Kit";
-        }
-        else if (selectedOptionText.Contains("Universe Disaster (Superhard)"))
-        {
-            combinedText = "Big Map (30'-40')\n\nMin team Player: 5\n\nLimited Kit";
+            string localizationKey = customDropdown.GetSelectedLocalizationKey();
+            if (localizationKey == "mapLevel.Normal")
+            {
+                // Normal level: Small map, 3 players, Unlimited kit
+                string mapSize = GetLocalizedString("MapInfo", "mapInfo.smallMap") + " (20'-30')";
+                string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 3";
+                // Note: unlimitedKit key doesn't exist in table - using hardcoded text or add key to table
+                string kitType = "Unlimited Kit"; // TODO: Add mapInfo.unlimitedKit key to MapInfo table
+                combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
+            }
+            else if (localizationKey == "mapLevel.Superhard")
+            {
+                // Superhard level: Big map, 5 players, Limited kit
+                string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap") + " (30'-40')";
+                string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 5";
+                string kitType = GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize");
+                combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
+            }
+            else
+            {
+                // Default fallback
+                string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap");
+                string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ":";
+                combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize")}";
+            }
         }
         else
         {
-            // Default fallback (can be customized)
-            combinedText = "Big Map\n\nMin team Player:\n\nLimited / Unlimited Kit";
+            // Fallback for regular dropdown - check localized strings
+            try
+            {
+                string normalText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString("Map Level", "mapLevel.Normal");
+                string superhardText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString("Map Level", "mapLevel.Superhard");
+                
+                if (selectedOptionText.Contains(normalText) || selectedOptionText.Contains("City Disaster"))
+                {
+                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.smallMap") + " (20'-30')";
+                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 3";
+                    string kitType = "Unlimited Kit"; // TODO: Add mapInfo.unlimitedKit key to MapInfo table
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
+                }
+                else if (selectedOptionText.Contains(superhardText) || selectedOptionText.Contains("Universe Disaster"))
+                {
+                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap") + " (30'-40')";
+                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 5";
+                    string kitType = GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize");
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
+                }
+                else
+                {
+                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap");
+                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ":";
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize")}";
+                }
+            }
+            catch
+            {
+                // Fallback to original hardcoded check
+                if (selectedOptionText.Contains("City Disaster (Normal)"))
+                {
+                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.smallMap") + " (20'-30')";
+                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 3";
+                    string kitType = "Unlimited Kit"; // TODO: Add mapInfo.unlimitedKit key to MapInfo table
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
+                }
+                else if (selectedOptionText.Contains("Universe Disaster (Superhard)"))
+                {
+                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap") + " (30'-40')";
+                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 5";
+                    string kitType = GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize");
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
+                }
+                else
+                {
+                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap");
+                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ":";
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize")}";
+                }
+            }
         }
         
         infoText.text = combinedText;
+    }
+    
+    // Helper method to get localized string synchronously
+    private string GetLocalizedString(string tableName, string entryKey)
+    {
+        try
+        {
+            return UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString(tableName, entryKey);
+        }
+        catch
+        {
+            Debug.LogWarning($"GetValuesFromDropdown: Could not find key '{entryKey}' in table '{tableName}'");
+            return entryKey; // Return key as fallback
+        }
     }
 
     // Get the selected value when user picks an option

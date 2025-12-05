@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Localization;
 
 // Dropdown wrapper that supports an unselected state (-1) and a placeholder
 public class CustomTMPDropdown : MonoBehaviour
@@ -9,8 +10,15 @@ public class CustomTMPDropdown : MonoBehaviour
     [SerializeField] private string placeholderText = "Choose level";
     [SerializeField] private bool showPlaceholderOnStart = true;
     
+    [Header("Localization")]
+    [SerializeField] private bool useLocalization = true;
+    [SerializeField] private string placeholderLocalizationKey = "mapLevel.ChooseMapLevel";
+    [SerializeField] private string localizationTableName = "Map Level";
+    
     private int internalValue = -1; // -1 means unselected
     private bool isInitialized = false;
+    private LocalizedString localizedPlaceholder;
+    private string currentPlaceholderText; // Current localized placeholder text
     
     // Expose dropdown properties for easy access
     public TMP_Dropdown Dropdown => dropdown;
@@ -36,7 +44,7 @@ public class CustomTMPDropdown : MonoBehaviour
                 // Unselected state - show placeholder
                 if (dropdown.captionText != null)
                 {
-                    dropdown.captionText.text = placeholderText;
+                    dropdown.captionText.text = currentPlaceholderText;
                 }
                 // Ensure TMP holds a harmless index without firing events; we'll override the caption
                 if (dropdown.options.Count > 0)
@@ -74,6 +82,33 @@ public class CustomTMPDropdown : MonoBehaviour
             return;
         }
         
+        // Setup localization for placeholder
+        if (useLocalization && !string.IsNullOrEmpty(placeholderLocalizationKey))
+        {
+            localizedPlaceholder = new LocalizedString(localizationTableName, placeholderLocalizationKey);
+            localizedPlaceholder.StringChanged += OnPlaceholderLocalized;
+            // Get initial localized value immediately
+            try
+            {
+                currentPlaceholderText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString(localizationTableName, placeholderLocalizationKey);
+                if (string.IsNullOrEmpty(currentPlaceholderText))
+                {
+                    currentPlaceholderText = placeholderText; // Fallback
+                }
+            }
+            catch
+            {
+                currentPlaceholderText = placeholderText; // Fallback
+            }
+        }
+        else
+        {
+            currentPlaceholderText = placeholderText;
+        }
+        
+        // Localize dropdown options
+        LocalizeDropdownOptions();
+        
         // Subscribe to dropdown's value changes
         dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         
@@ -91,11 +126,39 @@ public class CustomTMPDropdown : MonoBehaviour
         isInitialized = true;
     }
     
-    private void OnDestroy()
+    private void OnPlaceholderLocalized(string translatedText)
     {
-        if (dropdown != null)
+        currentPlaceholderText = translatedText;
+        // Update placeholder if currently unselected
+        if (internalValue == -1 && dropdown != null && dropdown.captionText != null)
         {
-            dropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
+            dropdown.captionText.text = currentPlaceholderText;
+        }
+    }
+    
+    // Localize dropdown options using Map Level table
+    private void LocalizeDropdownOptions()
+    {
+        if (dropdown == null || !useLocalization) return;
+        
+        // Map Level keys
+        string[] levelKeys = { "mapLevel.Normal", "mapLevel.Superhard" };
+        
+        // Update options with localized strings
+        for (int i = 0; i < dropdown.options.Count && i < levelKeys.Length; i++)
+        {
+            try
+            {
+                string localizedText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString(localizationTableName, levelKeys[i]);
+                if (!string.IsNullOrEmpty(localizedText))
+                {
+                    dropdown.options[i].text = localizedText;
+                }
+            }
+            catch
+            {
+                // Keep original text if localization fails
+            }
         }
     }
     
@@ -107,9 +170,9 @@ public class CustomTMPDropdown : MonoBehaviour
         if (internalValue == -1)
         {
             // Keep placeholder text visible
-            if (dropdown.captionText != null && dropdown.captionText.text != placeholderText)
+            if (dropdown.captionText != null && dropdown.captionText.text != currentPlaceholderText)
             {
-                dropdown.captionText.text = placeholderText;
+                dropdown.captionText.text = currentPlaceholderText;
             }
             
             // Hide checkmarks when the runtime list is open
@@ -141,9 +204,9 @@ public class CustomTMPDropdown : MonoBehaviour
         if (dropdown == null) return;
         
         // If still unselected, force caption to placeholder immediately to avoid TMP overriding it on open
-        if (internalValue == -1 && dropdown.captionText != null && dropdown.captionText.text != placeholderText)
+        if (internalValue == -1 && dropdown.captionText != null && dropdown.captionText.text != currentPlaceholderText)
         {
-            dropdown.captionText.text = placeholderText;
+            dropdown.captionText.text = currentPlaceholderText;
         }
         
         // Find the instantiated runtime list named "Dropdown List"
@@ -206,7 +269,7 @@ public class CustomTMPDropdown : MonoBehaviour
     {
         if (internalValue == -1)
         {
-            return placeholderText;
+            return currentPlaceholderText;
         }
         
         if (dropdown != null && internalValue >= 0 && internalValue < dropdown.options.Count)
@@ -215,6 +278,33 @@ public class CustomTMPDropdown : MonoBehaviour
         }
         
         return string.Empty;
+    }
+    
+    // Get the localization key for the selected option (for comparison purposes)
+    public string GetSelectedLocalizationKey()
+    {
+        if (internalValue == -1) return placeholderLocalizationKey;
+        
+        string[] levelKeys = { "mapLevel.Normal", "mapLevel.Superhard" };
+        if (internalValue >= 0 && internalValue < levelKeys.Length)
+        {
+            return levelKeys[internalValue];
+        }
+        
+        return string.Empty;
+    }
+    
+    private void OnDestroy()
+    {
+        if (dropdown != null)
+        {
+            dropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
+        }
+        
+        if (localizedPlaceholder != null)
+        {
+            localizedPlaceholder.StringChanged -= OnPlaceholderLocalized;
+        }
     }
 }
 

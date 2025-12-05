@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization;
+using TMPro;
 
 // Handles Back and Done buttons in Weapon Menu scene
 public class WeaponMenuButtons : MonoBehaviour
@@ -7,6 +9,9 @@ public class WeaponMenuButtons : MonoBehaviour
 	[SerializeField] private GameObject backButton;
 	[SerializeField] private GameObject doneButton;
 	[SerializeField] private SceneLoader sceneLoader;
+	[SerializeField] private TextMeshProUGUI backButtonText; // Text component for back button
+	
+	private LocalizedString localizedBackButton;
 	
 	private void Awake()
 	{
@@ -34,10 +39,19 @@ public class WeaponMenuButtons : MonoBehaviour
 		{
 			sceneLoader = FindFirstObjectByType<SceneLoader>();
 		}
+		
+		// Auto-find back button text if not assigned
+		if (backButtonText == null && backButton != null)
+		{
+			backButtonText = backButton.GetComponentInChildren<TextMeshProUGUI>();
+		}
 	}
 	
 	private void Start()
 	{
+		// Initialize back button text localization
+		InitializeBackButtonText();
+		
 		// Setup Back button - goes back to Map Menu
 		if (backButton != null)
 		{
@@ -109,6 +123,46 @@ public class WeaponMenuButtons : MonoBehaviour
 		else
 		{
 			Debug.LogError("WeaponMenuButtons: SceneLoader not found! Cannot load map scene.");
+		}
+	}
+	
+	private void InitializeBackButtonText()
+	{
+		if (backButtonText == null) return;
+		
+		// Setup localization for back button text
+		localizedBackButton = new LocalizedString("Buttons Name", "languageButton.BackButton");
+		localizedBackButton.StringChanged += UpdateBackButtonText;
+		
+		// Get initial localized value immediately
+		try
+		{
+			string initialText = UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString("Buttons Name", "languageButton.BackButton");
+			if (!string.IsNullOrEmpty(initialText))
+			{
+				backButtonText.text = initialText;
+			}
+		}
+		catch
+		{
+			// Keep original text if localization fails
+		}
+	}
+	
+	private void UpdateBackButtonText(string translatedText)
+	{
+		if (backButtonText != null)
+		{
+			backButtonText.text = translatedText;
+		}
+	}
+	
+	private void OnDestroy()
+	{
+		// Unsubscribe to prevent memory leaks
+		if (localizedBackButton != null)
+		{
+			localizedBackButton.StringChanged -= UpdateBackButtonText;
 		}
 	}
 }
