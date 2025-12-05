@@ -1119,39 +1119,44 @@ MonoBehaviour:
   weaponsData:
   - weaponName: Handgun
     weaponImage: {fileID: 21300000, guid: a1d727bd67a7d4a4e8627ca349d5f2c7, type: 3}
-    damage: 10
-    dispersion: 1
-    rateOfFire: 5
-    reloadSpeed: 2
-    ammunition: 30
+    damage: 15
+    dispersion: 5
+    rateOfFire: 1
+    reloadSpeed: 3
+    ammunition: 25
+    upgradeCount: 0
   - weaponName: Flamethrower
     weaponImage: {fileID: 21300000, guid: b31724200afac4d45a957d569e1330ff, type: 3}
-    damage: 15
-    dispersion: 1.5
-    rateOfFire: 7
-    reloadSpeed: 1.8
-    ammunition: 40
+    damage: 10
+    dispersion: 10
+    rateOfFire: 0.5
+    reloadSpeed: 3
+    ammunition: 30
+    upgradeCount: 0
   - weaponName: Rocket Launcher
     weaponImage: {fileID: 21300000, guid: 141a608556e8877469acc635eda1768e, type: 3}
-    damage: 20
-    dispersion: 2
-    rateOfFire: 9
-    reloadSpeed: 1.6
-    ammunition: 50
+    damage: 50
+    dispersion: 20
+    rateOfFire: 3
+    reloadSpeed: 5
+    ammunition: 5
+    upgradeCount: 0
   - weaponName: Shotgun
     weaponImage: {fileID: 21300000, guid: 147c58e52797fd7439e575607aaf2f7a, type: 3}
-    damage: 25
-    dispersion: 2.5
-    rateOfFire: 11
-    reloadSpeed: 1.4
-    ammunition: 60
+    damage: 20
+    dispersion: 10
+    rateOfFire: 1
+    reloadSpeed: 3
+    ammunition: 15
+    upgradeCount: 0
   - weaponName: Snipe
     weaponImage: {fileID: 21300000, guid: eac65f044d08c9e498e1ce8400431780, type: 3}
-    damage: 30
-    dispersion: 3
-    rateOfFire: 13
-    reloadSpeed: 1.2
-    ammunition: 70
+    damage: 40
+    dispersion: 1
+    rateOfFire: 4
+    reloadSpeed: 3
+    ammunition: 10
+    upgradeCount: 0
   weaponCardDisplayPrefab: {fileID: 4795967225729151971, guid: 97b41311744c4fc46865c18d6ddae76a, type: 3}
   weaponCardDataPrefab: {fileID: 5496745369465816382, guid: e3dffb5652cef0e4b8192741d177146e, type: 3}
   numberOfWeapons: 5
