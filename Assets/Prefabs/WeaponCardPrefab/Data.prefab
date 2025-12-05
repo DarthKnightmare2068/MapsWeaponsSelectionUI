@@ -811,6 +811,8 @@ MonoBehaviour:
   attributesValuesText: {fileID: 2543870571918226631}
   upgradeButton1: {fileID: 4041874786211180603}
   upgradeButton2: {fileID: 4615757778408216631}
+  upgradeButton1Text: {fileID: 4534265243234809207}
+  upgradeButton2Text: {fileID: 4718287353890876040}
 --- !u!1 &6164881254884269923
 GameObject:
   m_ObjectHideFlags: 0

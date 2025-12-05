@@ -15,8 +15,11 @@ public class WeaponCardData : MonoBehaviour
 	[Header("Upgrade Buttons")]
 	[SerializeField] private Button upgradeButton1; // First upgrade button
 	[SerializeField] private Button upgradeButton2; // Second upgrade button
+	[SerializeField] private TextMeshProUGUI upgradeButton1Text; // Text to show currency 1 cost on button 1
+	[SerializeField] private TextMeshProUGUI upgradeButton2Text; // Text to show currency 2 cost on button 2
 
 	private WeaponData currentWeapon;
+	private WeaponUpgrade weaponUpgrade;
 
 	// Weapon attributes enum
 	private enum WeaponAttribute
@@ -42,9 +45,9 @@ public class WeaponCardData : MonoBehaviour
 	private static readonly Dictionary<WeaponAttribute, string> attributeFormats = new Dictionary<WeaponAttribute, string>
 	{
 		{ WeaponAttribute.Damage, "0" },        // Damage: integer format
-		{ WeaponAttribute.Dispersion, "0.0" },  // Dispersion: one decimal
-		{ WeaponAttribute.RateOfFire, "0.0" },  // Rate of Fire: one decimal
-		{ WeaponAttribute.ReloadSpeed, "0.0" }, // Reload Speed: one decimal
+		{ WeaponAttribute.Dispersion, "0" },   // Dispersion: integer format
+		{ WeaponAttribute.RateOfFire, "0.0" }, // Rate of Fire: one decimal format
+		{ WeaponAttribute.ReloadSpeed, "0" },  // Reload Speed: integer format
 		{ WeaponAttribute.Ammunition, "0" }    // Ammunition: integer format
 	};
 
@@ -60,16 +63,20 @@ public class WeaponCardData : MonoBehaviour
 
 	private void Awake()
 	{
-		// Setup upgrade buttons (for future use)
-		if (upgradeButton1 != null)
+		// Find or auto-add WeaponUpgrade component
+		weaponUpgrade = GetComponent<WeaponUpgrade>();
+		if (weaponUpgrade == null)
 		{
-			upgradeButton1.onClick.AddListener(OnUpgradeButton1Clicked);
+			weaponUpgrade = GetComponentInParent<WeaponUpgrade>();
+		}
+		if (weaponUpgrade == null)
+		{
+			weaponUpgrade = gameObject.AddComponent<WeaponUpgrade>();
 		}
 
-		if (upgradeButton2 != null)
-		{
-			upgradeButton2.onClick.AddListener(OnUpgradeButton2Clicked);
-		}
+		// Setup upgrade buttons
+		upgradeButton1?.onClick.AddListener(OnUpgradeButton1Clicked);
+		upgradeButton2?.onClick.AddListener(OnUpgradeButton2Clicked);
 	}
 
 	private void OnDestroy()
@@ -102,11 +109,21 @@ public class WeaponCardData : MonoBehaviour
 			return;
 		}
 
-		// Set weapon name
+		// Set weapon name with upgrade level (base level is 1)
 		if (weaponNameText != null)
 		{
-			weaponNameText.text = data.WeaponName;
+			int currentLevel = data.UpgradeCount + 1; // Base level is 1, so add 1 to upgrade count
+			weaponNameText.text = $"{data.WeaponName} Lv.{currentLevel}";
 		}
+		
+		// Reset currency costs in WeaponUpgrade when setting new weapon
+		if (weaponUpgrade != null)
+		{
+			weaponUpgrade.ResetCurrencyCosts(data);
+		}
+		
+		// Update currency costs display
+		UpdateCurrencyCosts();
 
 		// Get attribute values from WeaponData using enum
 		List<string> attributeValues = GetAttributeValues(data);
@@ -205,16 +222,49 @@ public class WeaponCardData : MonoBehaviour
 		}
 	}
 
-	// Upgrade button handlers (for future implementation)
+	// Upgrade button handlers
 	private void OnUpgradeButton1Clicked()
 	{
-		// TODO: Implement upgrade logic for button 1
-		Debug.Log("Upgrade Button 1 clicked for weapon: " + (currentWeapon != null ? currentWeapon.WeaponName : "None"));
+		if (currentWeapon != null && weaponUpgrade != null)
+		{
+			weaponUpgrade.UpgradeWithCurrency1(currentWeapon);
+		}
 	}
 
 	private void OnUpgradeButton2Clicked()
 	{
-		// TODO: Implement upgrade logic for button 2
-		Debug.Log("Upgrade Button 2 clicked for weapon: " + (currentWeapon != null ? currentWeapon.WeaponName : "None"));
+		if (currentWeapon != null && weaponUpgrade != null)
+		{
+			weaponUpgrade.UpgradeWithCurrency2(currentWeapon);
+		}
+	}
+
+	// Refresh display after upgrade
+	public void RefreshDisplay()
+	{
+		if (currentWeapon != null)
+		{
+			SetWeapon(currentWeapon);
+		}
+	}
+	
+	// Update currency costs on upgrade buttons
+	private void UpdateCurrencyCosts()
+	{
+		if (weaponUpgrade == null) return;
+		
+		bool canUpgrade = currentWeapon != null && currentWeapon.CanUpgrade;
+		
+		// Update button 1 text
+		if (upgradeButton1Text != null)
+		{
+			upgradeButton1Text.text = canUpgrade ? weaponUpgrade.GetCurrency1Cost().ToString() : "MAX";
+		}
+		
+		// Update button 2 text
+		if (upgradeButton2Text != null)
+		{
+			upgradeButton2Text.text = canUpgrade ? weaponUpgrade.GetCurrency2Cost().ToString() : "MAX";
+		}
 	}
 }

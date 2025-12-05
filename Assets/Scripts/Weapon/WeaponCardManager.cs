@@ -137,14 +137,14 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 				else
 				{
 					// Create new WeaponData only for new indices
-					// Default values for testing
+					// Default values set to 0 - configure stats in Unity Inspector
 					weaponsData.Add(new WeaponData(
 						$"Weapon {i + 1}",
-						damage: 10f + (i * 5f),
-						dispersion: 1f + (i * 0.5f),
-						rateOfFire: 5f + (i * 2f),
-						reloadSpeed: 2f - (i * 0.2f),
-						ammunition: 30 + (i * 10)
+						damage: 0,
+						dispersion: 0,
+						rateOfFire: 0f,
+						reloadSpeed: 0,
+						ammunition: 0
 					));
 				}
 			}
