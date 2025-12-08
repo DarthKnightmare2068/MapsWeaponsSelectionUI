@@ -23,10 +23,18 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 465b2d3a3a848df4cb30292f8e22fcdc
-    m_Address: MapInfo_en-US
+    m_Address: Map Info_en-US
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-en-US
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98f543e1b716bed469755872e296b0fb
+    m_Address: Weapon Info_en-US
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-en-US
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: acc7d07f516b6d347a23675afb3cc941
     m_Address: Tittle Labels_en-US

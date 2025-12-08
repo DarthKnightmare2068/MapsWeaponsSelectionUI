@@ -13,83 +13,57 @@ public class WeaponCardData : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI attributesValuesText; // Right side: attribute values
 
 	[Header("Upgrade Buttons")]
-	[SerializeField] private Button upgradeButton1; // First upgrade button
-	[SerializeField] private Button upgradeButton2; // Second upgrade button
-	[SerializeField] private TextMeshProUGUI upgradeButton1Text; // Text to show currency 1 cost on button 1
-	[SerializeField] private TextMeshProUGUI upgradeButton2Text; // Text to show currency 2 cost on button 2
+	[SerializeField] private Button bmbButton; // BMB upgrade button
+	[SerializeField] private Button ewarButton; // EWAR upgrade button
+	[SerializeField] private TextMeshProUGUI bmbButtonText; // Text to show BMB cost on button
+	[SerializeField] private TextMeshProUGUI ewarButtonText; // Text to show EWAR cost on button
+	[SerializeField] private TextMeshProUGUI upgradeText; // Text to localize from localization table
 
 	private WeaponData currentWeapon;
 	private WeaponUpgrade weaponUpgrade;
 
-	// Weapon attributes enum
-	private enum WeaponAttribute
-	{
-		Damage,
-		Dispersion,
-		RateOfFire,
-		ReloadSpeed,
-		Ammunition
-	}
-
-	// Dictionary to store attribute names
-	private static readonly Dictionary<WeaponAttribute, string> attributeNames = new Dictionary<WeaponAttribute, string>
-	{
-		{ WeaponAttribute.Damage, "Damage" },
-		{ WeaponAttribute.Dispersion, "Dispersion" },
-		{ WeaponAttribute.RateOfFire, "Rate of Fire" },
-		{ WeaponAttribute.ReloadSpeed, "Reload Speed" },
-		{ WeaponAttribute.Ammunition, "Ammunition" }
-	};
-
-	// Dictionary to store attribute format strings
-	private static readonly Dictionary<WeaponAttribute, string> attributeFormats = new Dictionary<WeaponAttribute, string>
-	{
-		{ WeaponAttribute.Damage, "0" },        // Damage: integer format
-		{ WeaponAttribute.Dispersion, "0" },   // Dispersion: integer format
-		{ WeaponAttribute.RateOfFire, "0.0" }, // Rate of Fire: one decimal format
-		{ WeaponAttribute.ReloadSpeed, "0" },  // Reload Speed: integer format
-		{ WeaponAttribute.Ammunition, "0" }    // Ammunition: integer format
-	};
-
-	// Ordered list of attributes (defines the display order)
-	private static readonly WeaponAttribute[] attributeOrder = new WeaponAttribute[]
-	{
-		WeaponAttribute.Damage,
-		WeaponAttribute.Dispersion,
-		WeaponAttribute.RateOfFire,
-		WeaponAttribute.ReloadSpeed,
-		WeaponAttribute.Ammunition
-	};
-
 	private void Awake()
 	{
-		// Find or auto-add WeaponUpgrade component
-		weaponUpgrade = GetComponent<WeaponUpgrade>();
-		if (weaponUpgrade == null)
-		{
-			weaponUpgrade = GetComponentInParent<WeaponUpgrade>();
-		}
-		if (weaponUpgrade == null)
-		{
-			weaponUpgrade = gameObject.AddComponent<WeaponUpgrade>();
-		}
-
 		// Setup upgrade buttons
-		upgradeButton1?.onClick.AddListener(OnUpgradeButton1Clicked);
-		upgradeButton2?.onClick.AddListener(OnUpgradeButton2Clicked);
+		bmbButton?.onClick.AddListener(OnBmbButtonClicked);
+		ewarButton?.onClick.AddListener(OnEwarButtonClicked);
+	}
+
+	private void Start()
+	{
+		// Find WeaponUpgrade component (it will find us in its Awake, so we find it in Start)
+		FindWeaponUpgrade();
+	}
+
+	// Auto-creates the component if it doesn't exist (auto-find behavior)
+	private void FindWeaponUpgrade()
+	{
+		if (weaponUpgrade == null)
+		{
+			weaponUpgrade = GetComponent<WeaponUpgrade>();
+			if (weaponUpgrade == null)
+			{
+				weaponUpgrade = GetComponentInParent<WeaponUpgrade>();
+			}
+			// Auto-create if still not found
+			if (weaponUpgrade == null)
+			{
+				weaponUpgrade = gameObject.AddComponent<WeaponUpgrade>();
+			}
+		}
 	}
 
 	private void OnDestroy()
 	{
 		// Clean up button listeners
-		if (upgradeButton1 != null)
+		if (bmbButton != null)
 		{
-			upgradeButton1.onClick.RemoveListener(OnUpgradeButton1Clicked);
+			bmbButton.onClick.RemoveListener(OnBmbButtonClicked);
 		}
 
-		if (upgradeButton2 != null)
+		if (ewarButton != null)
 		{
-			upgradeButton2.onClick.RemoveListener(OnUpgradeButton2Clicked);
+			ewarButton.onClick.RemoveListener(OnEwarButtonClicked);
 		}
 	}
 
@@ -115,13 +89,14 @@ public class WeaponCardData : MonoBehaviour
 			int currentLevel = data.UpgradeCount + 1; // Base level is 1, so add 1 to upgrade count
 			weaponNameText.text = $"{data.WeaponName} Lv.{currentLevel}";
 		}
-		
+
 		// Reset currency costs in WeaponUpgrade when setting new weapon
+		FindWeaponUpgrade();
 		if (weaponUpgrade != null)
 		{
 			weaponUpgrade.ResetCurrencyCosts(data);
 		}
-		
+
 		// Update currency costs display
 		UpdateCurrencyCosts();
 
@@ -143,7 +118,7 @@ public class WeaponCardData : MonoBehaviour
 
 	private List<string> GetAttributeNames()
 	{
-		return attributeOrder.Select(attr => attributeNames[attr]).ToList();
+		return WeaponData.AttributeOrder.Select(attr => WeaponData.AttributeNames[attr]).ToList();
 	}
 
 	private List<string> GetAttributeValues(WeaponData data)
@@ -151,28 +126,40 @@ public class WeaponCardData : MonoBehaviour
 		if (data == null) return new List<string>();
 
 		List<string> values = new List<string>();
-		foreach (WeaponAttribute attr in attributeOrder)
+		foreach (WeaponData.WeaponAttribute attr in WeaponData.AttributeOrder)
 		{
-			string format = attributeFormats[attr];
+			string format = WeaponData.AttributeFormats[attr];
 			float value = GetAttributeValue(data, attr);
-			values.Add(value.ToString(format));
+			string valueString = value.ToString(format);
+
+			// Add units for specific attributes
+			if (attr == WeaponData.WeaponAttribute.RateOfFire)
+			{
+				valueString += " RPM";
+			}
+			else if (attr == WeaponData.WeaponAttribute.ReloadSpeed)
+			{
+				valueString += "%";
+			}
+
+			values.Add(valueString);
 		}
 		return values;
 	}
 
-	private float GetAttributeValue(WeaponData data, WeaponAttribute attribute)
+	private float GetAttributeValue(WeaponData data, WeaponData.WeaponAttribute attribute)
 	{
 		switch (attribute)
 		{
-			case WeaponAttribute.Damage:
+			case WeaponData.WeaponAttribute.Damage:
 				return data.Damage;
-			case WeaponAttribute.Dispersion:
+			case WeaponData.WeaponAttribute.Dispersion:
 				return data.Dispersion;
-			case WeaponAttribute.RateOfFire:
+			case WeaponData.WeaponAttribute.RateOfFire:
 				return data.RateOfFire;
-			case WeaponAttribute.ReloadSpeed:
+			case WeaponData.WeaponAttribute.ReloadSpeed:
 				return data.ReloadSpeed;
-			case WeaponAttribute.Ammunition:
+			case WeaponData.WeaponAttribute.Ammunition:
 				return data.Ammunition;
 			default:
 				return 0f;
@@ -214,7 +201,7 @@ public class WeaponCardData : MonoBehaviour
 		if (attributesValuesText != null)
 		{
 			List<string> emptyValues = new List<string>();
-			for (int i = 0; i < attributeOrder.Length; i++)
+			for (int i = 0; i < WeaponData.AttributeOrder.Length; i++)
 			{
 				emptyValues.Add("-");
 			}
@@ -223,19 +210,21 @@ public class WeaponCardData : MonoBehaviour
 	}
 
 	// Upgrade button handlers
-	private void OnUpgradeButton1Clicked()
+	private void OnBmbButtonClicked()
 	{
-		if (currentWeapon != null && weaponUpgrade != null)
+		if (currentWeapon != null)
 		{
-			weaponUpgrade.UpgradeWithCurrency1(currentWeapon);
+			FindWeaponUpgrade();
+			weaponUpgrade?.UpgradeWithCurrency1(currentWeapon);
 		}
 	}
 
-	private void OnUpgradeButton2Clicked()
+	private void OnEwarButtonClicked()
 	{
-		if (currentWeapon != null && weaponUpgrade != null)
+		if (currentWeapon != null)
 		{
-			weaponUpgrade.UpgradeWithCurrency2(currentWeapon);
+			FindWeaponUpgrade();
+			weaponUpgrade?.UpgradeWithCurrency2(currentWeapon);
 		}
 	}
 
@@ -247,24 +236,37 @@ public class WeaponCardData : MonoBehaviour
 			SetWeapon(currentWeapon);
 		}
 	}
-	
+
 	// Update currency costs on upgrade buttons
 	private void UpdateCurrencyCosts()
 	{
-		if (weaponUpgrade == null) return;
-		
-		bool canUpgrade = currentWeapon != null && currentWeapon.CanUpgrade;
-		
-		// Update button 1 text
-		if (upgradeButton1Text != null)
+		FindWeaponUpgrade();
+		if (weaponUpgrade == null)
 		{
-			upgradeButton1Text.text = canUpgrade ? weaponUpgrade.GetCurrency1Cost().ToString() : "MAX";
+			Debug.LogWarning("WeaponCardData: WeaponUpgrade component not found. Currency costs cannot be displayed.");
+			return;
 		}
-		
-		// Update button 2 text
-		if (upgradeButton2Text != null)
+
+		bool canUpgrade = currentWeapon != null && currentWeapon.CanUpgrade;
+
+		// Update BMB button text
+		if (bmbButtonText != null)
 		{
-			upgradeButton2Text.text = canUpgrade ? weaponUpgrade.GetCurrency2Cost().ToString() : "MAX";
+			bmbButtonText.text = canUpgrade ? $"{weaponUpgrade.GetCurrency1Cost()} BMB" : "MAX";
+		}
+		else
+		{
+			Debug.LogWarning("WeaponCardData: bmbButtonText is not assigned in the Inspector.");
+		}
+
+		// Update EWAR button text
+		if (ewarButtonText != null)
+		{
+			ewarButtonText.text = canUpgrade ? $"{weaponUpgrade.GetCurrency2Cost()} EWAR" : "MAX";
+		}
+		else
+		{
+			Debug.LogWarning("WeaponCardData: ewarButtonText is not assigned in the Inspector.");
 		}
 	}
 }

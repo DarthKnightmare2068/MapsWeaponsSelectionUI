@@ -4,11 +4,9 @@ using UnityEngine;
 public class WeaponUpgrade : MonoBehaviour
 {
 	[Header("Currency Display (UI Only)")]
-	[SerializeField] private int baseCurrency1Amount = 2000; // Base currency cost for button 1
-	[SerializeField] private int baseCurrency2Amount = 3; // Base currency cost for button 2
-	
-	private int currency1Amount; // Current currency cost for button 1
-	private int currency2Amount; // Current currency cost for button 2
+	[SerializeField] private int baseBMB = 2000; // Base BMB currency cost for BMB button
+	[SerializeField] private int baseEWAR = 3;   // Base EWAR currency cost for EWAR button
+
 	private WeaponCardData weaponCardData;
 
 	private void Awake()
@@ -18,13 +16,9 @@ public class WeaponUpgrade : MonoBehaviour
 		{
 			weaponCardData = GetComponentInParent<WeaponCardData>();
 		}
-		
-		// Initialize currency amounts from base values
-		currency1Amount = baseCurrency1Amount;
-		currency2Amount = baseCurrency2Amount;
 	}
 
-	// Upgrade using currency 1 (button 1) - UI test only, no currency check
+	// Upgrade using BMB currency - UI test only, no currency check
 	public bool UpgradeWithCurrency1(WeaponData weaponData)
 	{
 		if (!ValidateUpgrade(weaponData)) return false;
@@ -33,15 +27,15 @@ public class WeaponUpgrade : MonoBehaviour
 		if (success)
 		{
 			// Increase currency costs for next upgrade
-			currency1Amount += 500;
-			currency2Amount += 2;
+			baseBMB += 500;
+			baseEWAR += 2;
 			weaponCardData?.RefreshDisplay();
 		}
 
 		return success;
 	}
 
-	// Upgrade using currency 2 (button 2) - UI test only, no currency check
+	// Upgrade using EWAR currency - UI test only, no currency check
 	public bool UpgradeWithCurrency2(WeaponData weaponData)
 	{
 		if (!ValidateUpgrade(weaponData)) return false;
@@ -50,8 +44,8 @@ public class WeaponUpgrade : MonoBehaviour
 		if (success)
 		{
 			// Increase currency costs for next upgrade
-			currency1Amount += 500;
-			currency2Amount += 2;
+			baseBMB += 500;
+			baseEWAR += 2;
 			weaponCardData?.RefreshDisplay();
 		}
 
@@ -66,22 +60,22 @@ public class WeaponUpgrade : MonoBehaviour
 	}
 
 	// Get currency costs (for UI display)
-	public int GetCurrency1Cost() => currency1Amount;
-	public int GetCurrency2Cost() => currency2Amount;
-	
+	public int GetCurrency1Cost() => baseBMB;
+	public int GetCurrency2Cost() => baseEWAR;
+
 	// Reset currency costs (call when setting a new weapon)
 	public void ResetCurrencyCosts(WeaponData weaponData)
 	{
 		if (weaponData == null)
 		{
-			currency1Amount = baseCurrency1Amount;
-			currency2Amount = baseCurrency2Amount;
+			baseBMB = 2000;
+			baseEWAR = 3;
 		}
 		else
 		{
-			// Calculate current costs based on upgrade level
-			currency1Amount = baseCurrency1Amount + (weaponData.UpgradeCount * 500);
-			currency2Amount = baseCurrency2Amount + (weaponData.UpgradeCount * 2);
+			// Calculate current costs based on upgrade level (reset to base, then add upgrade costs)
+			baseBMB = 2000 + (weaponData.UpgradeCount * 500);
+			baseEWAR = 3 + (weaponData.UpgradeCount * 2);
 		}
 	}
 }

@@ -9,15 +9,15 @@ public class ChooseLevelWarning : MonoBehaviour
     private CanvasGroup canvasGroup;
     private Coroutine fadeCoroutine;
     private MapCardUI currentMapCard; // The Map Card that triggered this warning
-    
+
     [SerializeField] private TextMeshProUGUI warningText; // Reference to the TextMeshPro component
-    [SerializeField] private float displayDuration = 1f; // Time to show before fading
-    [SerializeField] private float fadeDuration = 0.5f; // Time to fade out
-    
+    [SerializeField] private float displayDuration = 1f;   // Time to show before fading
+    [SerializeField] private float fadeDuration = 0.5f;     // Time to fade out
+
     // Manual text translations
     private const string ENGLISH_TEXT = "You must choose one level first";
     private const string VIETNAMESE_TEXT = "Bạn phải chọn độ khó trước";
-    
+
     // Awake is called when the script instance is being loaded
     void Awake()
     {
@@ -32,13 +32,13 @@ public class ChooseLevelWarning : MonoBehaviour
         canvasGroup.alpha = 1f; // Start fully visible
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
-        
+
         // Auto-find TextMeshProUGUI if not assigned
         if (warningText == null)
         {
             warningText = GetComponentInChildren<TextMeshProUGUI>();
         }
-        
+
         // Deactivate the object initially
         gameObject.SetActive(false);
     }
@@ -124,7 +124,7 @@ public class ChooseLevelWarning : MonoBehaviour
         HideWarning();
         return true;
     }
-    
+
     // Show the warning with fade effect
     private void ShowWarning()
     {
@@ -137,16 +137,16 @@ public class ChooseLevelWarning : MonoBehaviour
         
         // Update localized text
         UpdateLocalizedText();
-        
+
         // Activate the object first
         gameObject.SetActive(true);
-        
+
         // Ensure all children are also active
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(true);
         }
-        
+
         // Ensure CanvasGroup is properly configured for visibility
         if (canvasGroup == null)
         {
@@ -174,10 +174,10 @@ public class ChooseLevelWarning : MonoBehaviour
     private void UpdateLocalizedText()
     {
         if (warningText == null) return;
-        
+
         // Get current locale code
         string currentLocale = LocalizationManager.GetCurrentLocaleCode();
-        
+
         // Set text based on locale
         if (currentLocale == "vi-VN")
         {
@@ -189,7 +189,7 @@ public class ChooseLevelWarning : MonoBehaviour
             warningText.text = ENGLISH_TEXT;
         }
     }
-    
+
     // Coroutine to fade out after delay
     private IEnumerator FadeOutAfterDelay()
     {
@@ -208,15 +208,15 @@ public class ChooseLevelWarning : MonoBehaviour
                 canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, elapsed / fadeDuration);
                 yield return null;
             }
-            
+
             canvasGroup.alpha = 0f;
         }
-        
+
         // Deactivate after fade
         gameObject.SetActive(false);
         fadeCoroutine = null;
     }
-    
+
     // Public method to hide the warning (can be called when level is selected)
     public void HideWarning()
     {

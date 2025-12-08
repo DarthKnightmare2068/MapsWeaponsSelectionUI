@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: MapInfo_en-US
+  m_Name: Map Info_en-US
   m_EditorClassIdentifier: 
   m_LocaleId:
     m_Code: en-US
@@ -27,11 +27,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14631297024
-    m_Localized: Min team payer
+    m_Localized: Limited kit
     m_Metadata:
       m_Items: []
   - m_Id: 16908804096
-    m_Localized: Limited member
+    m_Localized: Unlimited kit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19186311168
+    m_Localized: Min team players
     m_Metadata:
       m_Items: []
   references:

@@ -9,7 +9,8 @@ public static class LocalizationManager
 	public const string TABLE_TITTLE_LABELS = "Tittle Labels";
 	public const string TABLE_MAP_LABELS = "Map Labels";
 	public const string TABLE_MAP_LEVEL = "Map Level";
-	public const string TABLE_MAP_INFO = "MapInfo";
+	public const string TABLE_MAP_INFO = "Map Info";
+	public const string TABLE_WEAPON_INFO = "Weapon Info";
 
 	// Get localized string from any table using LocalizedString
 	// Returns a LocalizedString object that can be subscribed to for auto-updates
@@ -76,6 +77,14 @@ public static class LocalizationManager
 	public static string GetMapLabelSync(string entryKey)
 	{
 		return GetLocalizedStringSync(TABLE_MAP_LABELS, entryKey);
+	}
+
+	// Get localized string from Weapon Info table synchronously
+	// Parameter: entryKey - Key of the localized entry
+	// Returns: Localized string or key if not found
+	public static string GetWeaponInfoSync(string entryKey)
+	{
+		return GetLocalizedStringSync(TABLE_WEAPON_INFO, entryKey);
 	}
 
 	// Change the current locale

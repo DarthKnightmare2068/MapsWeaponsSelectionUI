@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 // Big weapon preview: shows image of the currently selected weapon
 public class WeaponCardDisplay : MonoBehaviour
@@ -9,13 +10,15 @@ public class WeaponCardDisplay : MonoBehaviour
 	[Header("Buttons")]
 	[SerializeField] private Button useButton; // Use button for later use
 	[SerializeField] private Button rentOutButton; // Rent out button for later use
+	[SerializeField] private TextMeshProUGUI useButtonText; // Text component for Use button
+	[SerializeField] private TextMeshProUGUI rentOutButtonText; // Text component for Rent Out button
 
 	private WeaponData currentWeapon;
 	private WeaponCardSelection currentSelectedCard; // Reference to currently selected card
 
 	private void Awake()
 	{
-		// Setup buttons (for future use)
+		// Setup buttons
 		if (useButton != null)
 		{
 			useButton.onClick.AddListener(OnUseButtonClicked);
@@ -24,6 +27,17 @@ public class WeaponCardDisplay : MonoBehaviour
 		if (rentOutButton != null)
 		{
 			rentOutButton.onClick.AddListener(OnRentOutButtonClicked);
+		}
+
+		// Set button text from localization
+		if (useButtonText != null)
+		{
+			useButtonText.text = LocalizationManager.GetWeaponInfoSync("weaponInfo.Use");
+		}
+
+		if (rentOutButtonText != null)
+		{
+			rentOutButtonText.text = LocalizationManager.GetWeaponInfoSync("weaponInfo.RentOut");
 		}
 	}
 
@@ -56,10 +70,10 @@ public class WeaponCardDisplay : MonoBehaviour
 	// Button handlers
 	private void OnUseButtonClicked()
 	{
-		// Set status to "Used" on the currently selected card
+		// Set status to "Use" on the currently selected card
 		if (currentSelectedCard != null)
 		{
-			currentSelectedCard.SetStatus(WeaponStatus.Used);
+			currentSelectedCard.SetStatus(WeaponStatus.Use);
 		}
 	}
 

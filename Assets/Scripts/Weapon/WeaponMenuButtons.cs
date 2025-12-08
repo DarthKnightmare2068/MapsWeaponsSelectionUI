@@ -9,8 +9,8 @@ public class WeaponMenuButtons : MonoBehaviour
 	[SerializeField] private GameObject backButton;
 	[SerializeField] private GameObject doneButton;
 	[SerializeField] private SceneLoader sceneLoader;
-	[SerializeField] private TextMeshProUGUI backButtonText; // Text component for back button
 	
+	private TextMeshProUGUI backButtonText; // Text component for back button (auto-found in Awake)
 	private LocalizedString localizedBackButton;
 	
 	private void Awake()

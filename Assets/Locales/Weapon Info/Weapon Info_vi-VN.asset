@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Weapon Info_vi-VN
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: vi-VN
+  m_SharedData: {fileID: 11400000, guid: 7404be3d302e6644eb0eb182815551cb, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 1096677842944
+    m_Localized: "Trang b\u1ECB"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1233340850176
+    m_Localized: "\u0110\xE3 h\u1EBFt"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1323107344384
+    m_Localized: "S\xE1t th\u01B0\u01A1ng"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1719368409088
+    m_Localized: "T\u1EC9 l\u1EC7 tr\xFAng"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1813798969344
+    m_Localized: "T\u1ED1c \u0111\u1ED9 b\u1EAFn tr\xEAn gi\xE2y"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1969143406592
+    m_Localized: "T\u1ED1c \u0111\u1ED9 n\u1EA1p \u0111\u1EA1n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2114199216128
+    m_Localized: "B\u0103n \u0111\u1EA1n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2223246925824
+    m_Localized: "N\xE2ng c\u1EA5p"
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

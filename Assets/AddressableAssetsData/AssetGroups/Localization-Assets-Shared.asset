@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7404be3d302e6644eb0eb182815551cb
+    m_Address: Assets/Locales/WeaponInfo/Weapon Info Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b94a4e536ea7d104b864c433a57c1a8f
     m_Address: Assets/Locales/BottonsName/Button Name Shared Data.asset
     m_ReadOnly: 1

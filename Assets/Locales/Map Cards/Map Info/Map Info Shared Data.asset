@@ -10,25 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: MapInfo Shared Data
+  m_Name: Map Info Shared Data
   m_EditorClassIdentifier: 
-  m_TableCollectionName: MapInfo
+  m_TableCollectionName: Map Info
   m_TableCollectionNameGuidString: 73216b88f597af540807bb3068ab564a
   m_Entries:
   - m_Id: 4959232000
-    m_Key: mapInfo.smallMap
+    m_Key: mapInfo.SmallMap
     m_Metadata:
       m_Items: []
   - m_Id: 12433481728
-    m_Key: mapInfo.bigMap
+    m_Key: mapInfo.BigMap
     m_Metadata:
       m_Items: []
   - m_Id: 14631297024
-    m_Key: mapInfo.minTeamPlayer
+    m_Key: mapInfo.LimitedKit
     m_Metadata:
       m_Items: []
   - m_Id: 16908804096
-    m_Key: mapInfo.limitedMemberSize
+    m_Key: mapInfo.UnlimitedKit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19186311168
+    m_Key: mapInfo.MinTeamPlayer
     m_Metadata:
       m_Items: []
   m_Metadata:

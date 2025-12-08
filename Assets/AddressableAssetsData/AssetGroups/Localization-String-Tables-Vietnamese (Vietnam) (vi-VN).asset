@@ -23,10 +23,11 @@ MonoBehaviour:
     - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1b515dbbd622c8e4a8ad9f0ec5cd9bd5
-    m_Address: MapInfo_vi-VN
+    m_Address: Map Info_vi-VN
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-vi-VN
+    - Preload
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6bc95cdbe362b8249b9e7b8cd787a123
     m_Address: Map Level_vi-VN
@@ -37,6 +38,13 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c41bcce72d3e81f4a811956c94d80789
     m_Address: Map Labels_vi-VN
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-vi-VN
+    - Preload
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfb7a086eee06f9498f8be20aa83ced6
+    m_Address: Weapon Info_vi-VN
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-vi-VN

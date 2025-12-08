@@ -10,6 +10,7 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 
 	[Header("Testing")]
 	[SerializeField] private int numberOfWeapons = 5;
+	[SerializeField] private int weaponMaxLv = 6; // Maximum level for all weapons (e.g., 6 means base level 1 + 5 upgrades, sets WeaponData.DefaultWeaponMaxLv)
 
 	private Canvas canvas;
 	private WeaponCardSelection currentSelection;
@@ -25,6 +26,12 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 			Debug.LogError("WeaponCardManager: Must be a child of Canvas!");
 			return;
 		}
+
+		// Set the static default max level in WeaponData
+		WeaponData.DefaultWeaponMaxLv = weaponMaxLv;
+
+		// Set max level for all existing weapons
+		SetMaxLevelForAllWeapons();
 
 		// Use shared container-finding logic (Scroll View/Viewport/Content)
 		SetupCardContainer();
@@ -90,8 +97,23 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		// Dynamically add a new weapon card at runtime
 		if (weaponData == null) return;
 
+		// Set max level for the new weapon
+		weaponData.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
+
 		weaponsData.Add(weaponData);
 		SpawnSingleCard(weaponCardSelectionPrefab, weaponData, weaponsData.Count - 1);
+	}
+
+	// Set max level for all weapons in the list using the static default value
+	private void SetMaxLevelForAllWeapons()
+	{
+		foreach (WeaponData weapon in weaponsData)
+		{
+			if (weapon != null)
+			{
+				weapon.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
+			}
+		}
 	}
 
 	public void ClearCards()
@@ -120,6 +142,12 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 
 	private void OnValidate()
 	{
+		// Set the static default max level in WeaponData
+		WeaponData.DefaultWeaponMaxLv = weaponMaxLv;
+
+		// Set max level for all weapons when weaponMaxLv changes
+		SetMaxLevelForAllWeapons();
+
 		// Auto-generate test weapons based on numberOfWeapons, preserving existing images
 		if (weaponsData.Count != numberOfWeapons)
 		{
@@ -138,16 +166,21 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 				{
 					// Create new WeaponData only for new indices
 					// Default values set to 0 - configure stats in Unity Inspector
-					weaponsData.Add(new WeaponData(
+					WeaponData newWeapon = new WeaponData(
 						$"Weapon {i + 1}",
 						damage: 0,
 						dispersion: 0,
 						rateOfFire: 0f,
 						reloadSpeed: 0,
 						ammunition: 0
-					));
+					);
+					newWeapon.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
+					weaponsData.Add(newWeapon);
 				}
 			}
+
+			// Set max level for all weapons after generation
+			SetMaxLevelForAllWeapons();
 		}
 	}
 

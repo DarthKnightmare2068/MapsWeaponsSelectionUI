@@ -9,7 +9,7 @@ public class WeaponCardSelection : MonoBehaviour
 	[SerializeField] private Image weaponImage;
 
 	[Header("Status Text")]
-	[SerializeField] private TextMeshProUGUI usedStatusText; // "Used" status text
+	[SerializeField] private TextMeshProUGUI useStatusText; // "Use" status text
 	[SerializeField] private TextMeshProUGUI rentOutStatusText; // "Rent Out" status text
 
 	[Header("Frame Display")]
@@ -95,13 +95,13 @@ public class WeaponCardSelection : MonoBehaviour
 		}
 	}
 
-	// Set weapon status: Used, Rent Out, or None
+	// Set weapon status: Use, Rent Out, or None
 	public void SetStatus(WeaponStatus status)
 	{
 		// Turn off both status texts first
-		if (usedStatusText != null)
+		if (useStatusText != null)
 		{
-			usedStatusText.gameObject.SetActive(false);
+			useStatusText.gameObject.SetActive(false);
 		}
 
 		if (rentOutStatusText != null)
@@ -112,10 +112,10 @@ public class WeaponCardSelection : MonoBehaviour
 		// Turn on the appropriate status text
 		switch (status)
 		{
-			case WeaponStatus.Used:
-				if (usedStatusText != null)
+			case WeaponStatus.Use:
+				if (useStatusText != null)
 				{
-					usedStatusText.gameObject.SetActive(true);
+					useStatusText.gameObject.SetActive(true);
 				}
 				break;
 
@@ -138,6 +138,6 @@ public class WeaponCardSelection : MonoBehaviour
 public enum WeaponStatus
 {
 	None,    // No status (both texts off)
-	Used,    // "Used" text is on
+	Use,    // "Use" text is on
 	RentOut  // "Rent Out" text is on
 }

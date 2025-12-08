@@ -103,26 +103,25 @@ public class GetValuesFromDropdown : MonoBehaviour
             if (localizationKey == "mapLevel.Normal")
             {
                 // Normal level: Small map, 3 players, Unlimited kit
-                string mapSize = GetLocalizedString("MapInfo", "mapInfo.smallMap") + " (20'-30')";
-                string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 3";
-                // Note: unlimitedKit key doesn't exist in table - using hardcoded text or add key to table
-                string kitType = "Unlimited Kit"; // TODO: Add mapInfo.unlimitedKit key to MapInfo table
+                string mapSize = GetLocalizedString("Map Info", "mapInfo.SmallMap") + " (20'-30')";
+                string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ": 3";
+                string kitType = GetLocalizedString("Map Info", "mapInfo.UnlimitedKit");
                 combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
             }
             else if (localizationKey == "mapLevel.Superhard")
             {
                 // Superhard level: Big map, 5 players, Limited kit
-                string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap") + " (30'-40')";
-                string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 5";
-                string kitType = GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize");
+                string mapSize = GetLocalizedString("Map Info", "mapInfo.BigMap") + " (30'-40')";
+                string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ": 5";
+                string kitType = GetLocalizedString("Map Info", "mapInfo.LimitedKit");
                 combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
             }
             else
             {
                 // Default fallback
-                string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap");
-                string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ":";
-                combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize")}";
+                string mapSize = GetLocalizedString("Map Info", "mapInfo.BigMap");
+                string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ":";
+                combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("Map Info", "mapInfo.LimitedKit")}";
             }
         }
         else
@@ -135,23 +134,23 @@ public class GetValuesFromDropdown : MonoBehaviour
                 
                 if (selectedOptionText.Contains(normalText) || selectedOptionText.Contains("City Disaster"))
                 {
-                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.smallMap") + " (20'-30')";
-                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 3";
-                    string kitType = "Unlimited Kit"; // TODO: Add mapInfo.unlimitedKit key to MapInfo table
+                    string mapSize = GetLocalizedString("Map Info", "mapInfo.SmallMap") + " (20'-30')";
+                    string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ": 3";
+                    string kitType = GetLocalizedString("Map Info", "mapInfo.UnlimitedKit");
                     combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
                 }
                 else if (selectedOptionText.Contains(superhardText) || selectedOptionText.Contains("Universe Disaster"))
                 {
-                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap") + " (30'-40')";
-                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 5";
-                    string kitType = GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize");
+                    string mapSize = GetLocalizedString("Map Info", "mapInfo.BigMap") + " (30'-40')";
+                    string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ": 5";
+                    string kitType = GetLocalizedString("Map Info", "mapInfo.LimitedKit");
                     combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
                 }
                 else
                 {
-                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap");
-                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ":";
-                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize")}";
+                    string mapSize = GetLocalizedString("Map Info", "mapInfo.BigMap");
+                    string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ":";
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("Map Info", "mapInfo.LimitedKit")}";
                 }
             }
             catch
@@ -159,23 +158,23 @@ public class GetValuesFromDropdown : MonoBehaviour
                 // Fallback to original hardcoded check
                 if (selectedOptionText.Contains("City Disaster (Normal)"))
                 {
-                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.smallMap") + " (20'-30')";
-                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 3";
-                    string kitType = "Unlimited Kit"; // TODO: Add mapInfo.unlimitedKit key to MapInfo table
+                    string mapSize = GetLocalizedString("Map Info", "mapInfo.SmallMap") + " (20'-30')";
+                    string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ": 3";
+                    string kitType = GetLocalizedString("Map Info", "mapInfo.UnlimitedKit");
                     combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
                 }
                 else if (selectedOptionText.Contains("Universe Disaster (Superhard)"))
                 {
-                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap") + " (30'-40')";
-                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ": 5";
-                    string kitType = GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize");
+                    string mapSize = GetLocalizedString("Map Info", "mapInfo.BigMap") + " (30'-40')";
+                    string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ": 5";
+                    string kitType = GetLocalizedString("Map Info", "mapInfo.LimitedKit");
                     combinedText = $"{mapSize}\n\n{minPlayers}\n\n{kitType}";
                 }
                 else
                 {
-                    string mapSize = GetLocalizedString("MapInfo", "mapInfo.bigMap");
-                    string minPlayers = GetLocalizedString("MapInfo", "mapInfo.minTeamPlayer") + ":";
-                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("MapInfo", "mapInfo.limitedMemberSize")}";
+                    string mapSize = GetLocalizedString("Map Info", "mapInfo.BigMap");
+                    string minPlayers = GetLocalizedString("Map Info", "mapInfo.MinTeamPlayer") + ":";
+                    combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("Map Info", "mapInfo.LimitedKit")}";
                 }
             }
         }
