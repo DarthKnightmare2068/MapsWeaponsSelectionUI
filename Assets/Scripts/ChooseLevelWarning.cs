@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
+using UnityEngine.Localization.Settings;
 
 public class ChooseLevelWarning : MonoBehaviour
 {
@@ -8,8 +10,13 @@ public class ChooseLevelWarning : MonoBehaviour
     private Coroutine fadeCoroutine;
     private MapCardUI currentMapCard; // The Map Card that triggered this warning
     
+    [SerializeField] private TextMeshProUGUI warningText; // Reference to the TextMeshPro component
     [SerializeField] private float displayDuration = 1f; // Time to show before fading
     [SerializeField] private float fadeDuration = 0.5f; // Time to fade out
+    
+    // Manual text translations
+    private const string ENGLISH_TEXT = "You must choose one level first";
+    private const string VIETNAMESE_TEXT = "Bạn phải chọn độ khó trước";
     
     // Awake is called when the script instance is being loaded
     void Awake()
@@ -25,6 +32,12 @@ public class ChooseLevelWarning : MonoBehaviour
         canvasGroup.alpha = 1f; // Start fully visible
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
+        
+        // Auto-find TextMeshProUGUI if not assigned
+        if (warningText == null)
+        {
+            warningText = GetComponentInChildren<TextMeshProUGUI>();
+        }
         
         // Deactivate the object initially
         gameObject.SetActive(false);
@@ -122,6 +135,9 @@ public class ChooseLevelWarning : MonoBehaviour
             fadeCoroutine = null;
         }
         
+        // Update localized text
+        UpdateLocalizedText();
+        
         // Activate the object first
         gameObject.SetActive(true);
         
@@ -151,6 +167,26 @@ public class ChooseLevelWarning : MonoBehaviour
         if (gameObject.activeInHierarchy)
         {
             fadeCoroutine = StartCoroutine(FadeOutAfterDelay());
+        }
+    }
+    
+    // Update the warning text based on current locale
+    private void UpdateLocalizedText()
+    {
+        if (warningText == null) return;
+        
+        // Get current locale code
+        string currentLocale = LocalizationManager.GetCurrentLocaleCode();
+        
+        // Set text based on locale
+        if (currentLocale == "vi-VN")
+        {
+            warningText.text = VIETNAMESE_TEXT;
+        }
+        else
+        {
+            // Default to English for any other locale
+            warningText.text = ENGLISH_TEXT;
         }
     }
     
