@@ -7,6 +7,7 @@ public class MapCardManager : SpawnCardLogic<MapData, MapCardUI>
 	[SerializeField] private GameObject mapCardPrefab;
 	[SerializeField] private SceneLoader sceneLoader;
 	[SerializeField] private List<MapData> mapsData = new List<MapData>();
+	[SerializeField] private ChooseLevelWarning warning; // Reference to warning object for dependency injection
 
 	[Header("Lock Settings")]
 	public float lockedCardAlpha = 0.3f; // Alpha value for locked cards (0.3 = 30% opacity)
@@ -17,6 +18,18 @@ public class MapCardManager : SpawnCardLogic<MapData, MapCardUI>
 	private void Start()
 	{
 		SetupCardContainer();
+		
+		// Find warning object once (for dependency injection to all cards)
+		// This is a single search instead of each card searching individually
+		if (warning == null)
+		{
+			warning = FindFirstObjectByType<ChooseLevelWarning>();
+			if (warning == null)
+			{
+				Debug.LogWarning("MapCardManager: ChooseLevelWarning not found in scene. Cards will not be able to show level selection warnings.");
+			}
+		}
+		
 		GenerateMapCards();
 	}
 	
@@ -36,10 +49,12 @@ public class MapCardManager : SpawnCardLogic<MapData, MapCardUI>
 		GenerateCards(mapsData, mapCardPrefab);
 	}
 	
-	protected override void InitialiseCard(MapCardUI card, MapData data, int index)
+	protected override void InitializeCard(MapCardUI card, MapData data, int index)
 	{
-		// Initialize card with map data
-		card.Initialize(data, sceneLoader, lockedCardAlpha);
+		// Initialize card with map data and inject warning reference
+		// Dependency injection: Pass the warning reference so each card doesn't need to search for it
+		// This improves performance by eliminating repeated FindObjectsByType calls
+		card.Initialize(data, sceneLoader, lockedCardAlpha, warning);
 	}
 
 	public void AddMap(MapData mapData)
@@ -49,17 +64,35 @@ public class MapCardManager : SpawnCardLogic<MapData, MapCardUI>
 
 		mapsData.Add(mapData);
 		SpawnSingleCard(mapCardPrefab, mapData, mapsData.Count - 1);
+		
+		// Invalidate cache in ChooseLevelWarning since card count changed
+		if (warning != null)
+		{
+			warning.InvalidateMapCardsCache();
+		}
 	}
 
 	public void ClearCards()
 	{
 		ClearSpawnedCards();
+		
+		// Invalidate cache in ChooseLevelWarning since cards were cleared
+		if (warning != null)
+		{
+			warning.InvalidateMapCardsCache();
+		}
 	}
 
 	public void RefreshCards()
 	{
 		// Regenerate all cards from Maps Data
 		GenerateMapCards();
+		
+		// Invalidate cache in ChooseLevelWarning since cards were regenerated
+		if (warning != null)
+		{
+			warning.InvalidateMapCardsCache();
+		}
 	}
 
 	private void OnValidate()

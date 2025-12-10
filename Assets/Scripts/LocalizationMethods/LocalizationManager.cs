@@ -6,7 +6,10 @@ using UnityEngine.Localization.Settings;
 public static class LocalizationManager
 {
 	// Table names constants
+	// NOTE: Asset is currently named "Tittle Labels"; keep legacy constant for compatibility.
 	public const string TABLE_TITTLE_LABELS = "Tittle Labels";
+	// Preferred alias with correct spelling to use going forward.
+	public const string TABLE_TITLE_LABELS = TABLE_TITTLE_LABELS;
 	public const string TABLE_MAP_LABELS = "Map Labels";
 	public const string TABLE_MAP_LEVEL = "Map Level";
 	public const string TABLE_MAP_INFO = "Map Info";
@@ -27,13 +30,16 @@ public static class LocalizationManager
 		return new LocalizedString(tableName, entryKey);
 	}
 
-	// Get localized string from Tittle Labels table
+	// Get localized string from Title Labels table (preferred spelling)
 	// Parameter: entryKey - Key of the localized entry
 	// Returns: LocalizedString object
-	public static LocalizedString GetTittleLabel(string entryKey)
+	public static LocalizedString GetTitleLabel(string entryKey)
 	{
-		return GetLocalizedString(TABLE_TITTLE_LABELS, entryKey);
+		return GetLocalizedString(TABLE_TITLE_LABELS, entryKey);
 	}
+
+	// Legacy misspelled alias kept for backward compatibility
+	public static LocalizedString GetTittleLabel(string entryKey) => GetTitleLabel(entryKey);
 
 	// Get localized string from Map Labels table
 	// Parameter: entryKey - Key of the localized entry
@@ -63,13 +69,16 @@ public static class LocalizationManager
 		}
 	}
 
-	// Get localized string from Tittle Labels table synchronously
+	// Get localized string from Title Labels table synchronously (preferred spelling)
 	// Parameter: entryKey - Key of the localized entry
 	// Returns: Localized string or key if not found
-	public static string GetTittleLabelSync(string entryKey)
+	public static string GetTitleLabelSync(string entryKey)
 	{
-		return GetLocalizedStringSync(TABLE_TITTLE_LABELS, entryKey);
+		return GetLocalizedStringSync(TABLE_TITLE_LABELS, entryKey);
 	}
+
+	// Legacy misspelled alias kept for backward compatibility
+	public static string GetTittleLabelSync(string entryKey) => GetTitleLabelSync(entryKey);
 
 	// Get localized string from Map Labels table synchronously
 	// Parameter: entryKey - Key of the localized entry
