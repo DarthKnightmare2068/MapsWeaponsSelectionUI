@@ -78,7 +78,7 @@ public abstract class SpawnCardLogic<TData, TCard> : MonoBehaviour where TCard :
 			return null;
 		}
 
-		InitialiseCard(card, data, index);
+		InitializeCard(card, data, index);
 		instantiatedCards.Add(card);
 		return card;
 	}
@@ -102,6 +102,6 @@ public abstract class SpawnCardLogic<TData, TCard> : MonoBehaviour where TCard :
 		return !(data is null);
 	}
 
-	protected abstract void InitialiseCard(TCard card, TData data, int index);
+	protected abstract void InitializeCard(TCard card, TData data, int index);
 }
 

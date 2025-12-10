@@ -111,19 +111,6 @@ public class WeaponData
 		this.weaponMaxLv = DefaultWeaponMaxLv; // Initialize with static default
 	}
 
-	public WeaponData(string weaponName, string unusedLocalizationKey, float damage, float dispersion, float rateOfFire, float reloadSpeed, float ammunition, Sprite weaponImage = null)
-	{
-		this.weaponName = weaponName;
-		this.weaponImage = weaponImage;
-		this.damage = damage;
-		this.dispersion = dispersion;
-		this.rateOfFire = rateOfFire;
-		this.reloadSpeed = reloadSpeed;
-		this.ammunition = ammunition;
-		this.upgradeCount = 0;
-		this.weaponMaxLv = DefaultWeaponMaxLv; // Initialize with static default
-	}
-
 	// Upgrade method: applies upgrade stat changes
 	public bool Upgrade()
 	{

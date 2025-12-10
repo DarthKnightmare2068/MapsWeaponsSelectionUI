@@ -195,28 +195,4 @@ public class GetValuesFromDropdown : MonoBehaviour
             return entryKey; // Return key as fallback
         }
     }
-
-    // Get the selected value when user picks an option
-    public void GetValues()
-    {
-        if (customDropdown != null)
-        {
-            if (!customDropdown.HasSelection())
-            {
-                return;
-            }
-            
-            // Get selected values (logs removed for production)
-            int selectedIndex = customDropdown.Value;
-            string selectedText = customDropdown.GetSelectedText();
-        }
-        else if (dropdown != null)
-        {
-            if (dropdown.options.Count == 0) return;
-
-            // Get selected values (logs removed for production)
-            int selectedIndex = dropdown.value;
-            string selectedText = dropdown.options[selectedIndex].text;
-        }
-    }
 }

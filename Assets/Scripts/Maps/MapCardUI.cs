@@ -49,11 +49,32 @@ public class MapCardUI : MonoBehaviour
 		}
 	}
 
-	public void Initialize(MapData data, SceneLoader loader, float cardAlpha = 0.3f)
+	// Dependency Injection: ChooseLevelWarning is passed here instead of searching for it.
+	// Why: MapCardUI is instantiated multiple times (one per map card), but ChooseLevelWarning is a single
+	// scene object. Without injection, every card would search for the same warning object, causing
+	// performance issues (10 cards = 10 searches). By injecting the reference once from MapCardManager,
+	// we eliminate all searches and get instant access. This is a one-to-one relationship (one warning
+	// for all cards), making dependency injection the ideal solution.
+	public void Initialize(MapData data, SceneLoader loader, float cardAlpha = 0.3f, ChooseLevelWarning warningRef = null)
 	{
+		// Safety check: Validate that data is not null before accessing its properties
+		// This prevents NullReferenceException if Initialize is called with null data
+		if (data == null)
+		{
+			Debug.LogError("MapCardUI.Initialize: MapData parameter is null! Cannot initialize card.");
+			return;
+		}
+		
 		mapData = data;
 		sceneLoader = loader;
 		lockedCardAlpha = cardAlpha;
+		
+		// Set warning reference via dependency injection (if provided)
+		// This avoids expensive FindObjectsByType searches that would happen every time TryStartGame is called
+		if (warningRef != null)
+		{
+			warning = warningRef;
+		}
 
 		// Set map name text using localization (Method 2)
 		if (mapNameText != null)
@@ -65,7 +86,16 @@ public class MapCardUI : MonoBehaviour
 			}
 
 			// Create new LocalizedString with the map's localization key
-			string localizationKey = string.IsNullOrEmpty(data.LocalizationKey) ? data.MapName : data.LocalizationKey;
+			// data is guaranteed to be non-null due to check at method start
+			string localizationKey;
+			if (string.IsNullOrEmpty(data.LocalizationKey))
+			{
+				localizationKey = data.MapName;
+			}
+			else
+			{
+				localizationKey = data.LocalizationKey;
+			}
 			localizedString = new LocalizedString(localizationTableName, localizationKey);
 			
 			// Subscribe to localization changes (auto-updates when locale or key changes)
@@ -118,25 +148,18 @@ public class MapCardUI : MonoBehaviour
 	// All validation and scene loading is delegated to GameStartService.
 	private void TryStartGame()
 	{
-		// Find dropdown and warning if not already found
+		// Find dropdown if not already found (this is local to each card, so no injection needed)
 		if (levelDropdown == null)
 		{
 			levelDropdown = GetComponentInChildren<CustomTMPDropdown>();
 		}
+		
+		// Warning should be set via dependency injection in Initialize().
+		// If it's still null, log an error but don't search (performance optimization).
+		// The warning reference should be provided by MapCardManager during card initialization.
 		if (warning == null)
 		{
-			// Find the warning object in the scene (not in prefab, but in scene)
-			// Search including inactive objects since the warning starts inactive
-			ChooseLevelWarning[] warnings = FindObjectsByType<ChooseLevelWarning>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-			if (warnings != null && warnings.Length > 0)
-			{
-				warning = warnings[0];
-			}
-			
-			if (warning == null)
-			{
-				Debug.LogError("MapCardUI: ChooseLevelWarning not found in scene! Make sure the warning object with ChooseLevelWarning script exists in the scene.");
-			}
+			Debug.LogError("MapCardUI: ChooseLevelWarning reference not provided! Make sure MapCardManager passes the warning reference during Initialize().");
 		}
 
 		GameStartService.TryStartGame(mapData, levelDropdown, warning, sceneLoader, this);

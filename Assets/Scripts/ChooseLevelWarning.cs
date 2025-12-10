@@ -9,6 +9,14 @@ public class ChooseLevelWarning : MonoBehaviour
     private CanvasGroup canvasGroup;
     private Coroutine fadeCoroutine;
     private MapCardUI currentMapCard; // The Map Card that triggered this warning
+    
+    // Caching: Store MapCardUI[] array to avoid repeated FindObjectsByType searches
+    // Why: ChooseLevelWarning.CheckLevelSelection() can be called frequently (every time user clicks play),
+    // and each call was searching through all objects in the scene. With caching, we search once and reuse
+    // the result. This is a one-to-many relationship (one warning needs many cards), and the list can change
+    // at runtime, so caching with invalidation is better than dependency injection here.
+    private MapCardUI[] cachedMapCards;
+    private bool isMapCardsCacheValid = false;
 
     [SerializeField] private TextMeshProUGUI warningText; // Reference to the TextMeshPro component
     [SerializeField] private float displayDuration = 1f;   // Time to show before fading
@@ -73,23 +81,32 @@ public class ChooseLevelWarning : MonoBehaviour
         }
         else if (currentMapCard == null)
         {
-            // Try to find the Map Card that has the play button that was just pressed
-            // Find all Map Cards and check which one is active/interactable
-            MapCardUI[] allMapCards = FindObjectsByType<MapCardUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            if (allMapCards.Length > 0)
+            // Caching optimization: Use cached MapCardUI array instead of searching every time
+            // If cache is invalid or doesn't exist, search once and cache the result
+            // This prevents expensive FindObjectsByType calls on every user click
+            if (!isMapCardsCacheValid || cachedMapCards == null)
+            {
+                cachedMapCards = FindObjectsByType<MapCardUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                isMapCardsCacheValid = true;
+            }
+            
+            // Use cached array instead of searching again
+            if (cachedMapCards != null && cachedMapCards.Length > 0)
             {
                 // Use the first active one, or the first one found
-                foreach (MapCardUI card in allMapCards)
+                foreach (MapCardUI card in cachedMapCards)
                 {
-                    if (card.gameObject.activeInHierarchy)
+                    if (card != null && card.gameObject.activeInHierarchy)
                     {
                         currentMapCard = card;
                         break;
                     }
                 }
-                if (currentMapCard == null)
+                // Safety check: Only use cachedMapCards[0] if it's not null
+                // The array could contain null entries if cards were destroyed but cache wasn't invalidated
+                if (currentMapCard == null && cachedMapCards[0] != null)
                 {
-                    currentMapCard = allMapCards[0];
+                    currentMapCard = cachedMapCards[0];
                 }
             }
         }
@@ -233,5 +250,14 @@ public class ChooseLevelWarning : MonoBehaviour
             canvasGroup.alpha = 0f;
         }
         gameObject.SetActive(false);
+    }
+    
+    // Invalidate the cached MapCardUI array
+    // Call this when map cards are added or removed at runtime to refresh the cache
+    // This ensures the cache stays accurate if the number of cards changes dynamically
+    public void InvalidateMapCardsCache()
+    {
+        isMapCardsCacheValid = false;
+        cachedMapCards = null;
     }
 }

@@ -87,7 +87,7 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		}
 	}
 
-	protected override void InitialiseCard(WeaponCardSelection card, WeaponData data, int index)
+	protected override void InitializeCard(WeaponCardSelection card, WeaponData data, int index)
 	{
 		card.Initialize(data, this);
 	}
