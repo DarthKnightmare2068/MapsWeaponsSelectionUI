@@ -27,9 +27,13 @@ public class PlayButtonLevelCheck : MonoBehaviour
             Debug.LogWarning("PlayButtonLevelCheck: MapCardUI not found in parent hierarchy!");
         }
         
-        // Cache warning reference once during Awake (performance optimization)
-        // This avoids searching every time the button is clicked
-        cachedWarning = FindFirstObjectByType<ChooseLevelWarning>();
+		// Cache warning reference once during Awake (performance optimization)
+		// This avoids searching every time the button is clicked
+		cachedWarning = FindFirstObjectByType<ChooseLevelWarning>();
+		if (cachedWarning == null)
+		{
+			Debug.LogWarning("PlayButtonLevelCheck: ChooseLevelWarning not found in scene. Level selection warnings will not work.");
+		}
         
         // Override button's onClick to check level first
         if (button != null)
@@ -48,21 +52,18 @@ public class PlayButtonLevelCheck : MonoBehaviour
             return;
         }
 
-        // Fallback: Use cached warning reference instead of searching every time
-        // This improves performance by avoiding repeated FindObjectsByType calls
-        ChooseLevelWarning warning = cachedWarning;
-        
-        if (warning != null)
-        {
-            // Try to find MapCardUI to pass to warning
-            MapCardUI card = GetComponentInParent<MapCardUI>();
-            bool canProceed = warning.CheckLevelSelection(card);
-            if (!canProceed)
-            {
-                // Warning shown, don't proceed
-                return;
-            }
-        }
+		// Fallback: Use cached warning reference instead of searching every time
+		// This improves performance by avoiding repeated FindObjectsByType calls
+		if (cachedWarning != null)
+		{
+			// Use already-cached mapCardUI instead of searching again
+			bool canProceed = cachedWarning.CheckLevelSelection(mapCardUI);
+			if (!canProceed)
+			{
+				// Warning shown, don't proceed
+				return;
+			}
+		}
         
         // If no checks found, allow the button's original onClick to work
         // (This shouldn't happen if properly set up, but provides fallback)

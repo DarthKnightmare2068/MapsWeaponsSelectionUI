@@ -94,19 +94,34 @@ public class ChooseLevelWarning : MonoBehaviour
             if (cachedMapCards != null && cachedMapCards.Length > 0)
             {
                 // Use the first active one, or the first one found
+                // FIXED: Proper validation for destroyed Unity objects
                 foreach (MapCardUI card in cachedMapCards)
                 {
-                    if (card != null && card.gameObject.activeInHierarchy)
+                    // Check both null and gameObject.activeInHierarchy to handle destroyed objects
+                    if (card != null && card.gameObject != null && card.gameObject.activeInHierarchy)
                     {
                         currentMapCard = card;
                         break;
                     }
                 }
-                // Safety check: Only use cachedMapCards[0] if it's not null
-                // The array could contain null entries if cards were destroyed but cache wasn't invalidated
-                if (currentMapCard == null && cachedMapCards[0] != null)
+                
+                // If no active card found, try to find any non-destroyed card
+                if (currentMapCard == null)
                 {
-                    currentMapCard = cachedMapCards[0];
+                    foreach (MapCardUI card in cachedMapCards)
+                    {
+                        if (card != null && card.gameObject != null)
+                        {
+                            currentMapCard = card;
+                            break;
+                        }
+                    }
+                    
+                    // If all cached cards are destroyed, invalidate cache
+                    if (currentMapCard == null)
+                    {
+                        InvalidateMapCardsCache();
+                    }
                 }
             }
         }

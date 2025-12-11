@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System.Linq;
 
 // Stats panel: shows weapon name, attributes (names on left, values on right), and upgrade buttons
 public class WeaponCardData : MonoBehaviour
@@ -35,7 +34,7 @@ public class WeaponCardData : MonoBehaviour
 		FindWeaponUpgrade();
 	}
 
-	// Auto-creates the component if it doesn't exist (auto-find behavior)
+	// Finds WeaponUpgrade component in this GameObject or parent hierarchy
 	private void FindWeaponUpgrade()
 	{
 		if (weaponUpgrade == null)
@@ -45,10 +44,10 @@ public class WeaponCardData : MonoBehaviour
 			{
 				weaponUpgrade = GetComponentInParent<WeaponUpgrade>();
 			}
-			// Auto-create if still not found
+			// Warn if not found instead of auto-creating (auto-creating can cause unexpected behavior)
 			if (weaponUpgrade == null)
 			{
-				weaponUpgrade = gameObject.AddComponent<WeaponUpgrade>();
+				Debug.LogWarning("WeaponCardData: WeaponUpgrade component not found on this GameObject or parents. Please add WeaponUpgrade component manually.");
 			}
 		}
 	}
@@ -116,9 +115,27 @@ public class WeaponCardData : MonoBehaviour
 		}
 	}
 
+	// Cached attribute names list to avoid LINQ allocation
+	private List<string> cachedAttributeNamesList;
+	private string cachedAttributeNamesLocale;
+
 	private List<string> GetAttributeNames()
 	{
-		return WeaponData.AttributeOrder.Select(attr => WeaponData.AttributeNames[attr]).ToList();
+		// Check if locale changed or cache is null
+		string currentLocale = LocalizationManager.GetCurrentLocaleCode();
+		if (cachedAttributeNamesList == null || cachedAttributeNamesLocale != currentLocale)
+		{
+			// Rebuild list without LINQ to avoid allocation
+			cachedAttributeNamesList = new List<string>(WeaponData.AttributeOrder.Length);
+			Dictionary<WeaponAttribute, string> attributeNames = WeaponData.AttributeNames;
+			foreach (WeaponAttribute attr in WeaponData.AttributeOrder)
+			{
+				cachedAttributeNamesList.Add(attributeNames[attr]);
+			}
+			cachedAttributeNamesLocale = currentLocale;
+		}
+
+		return cachedAttributeNamesList;
 	}
 
 	private List<string> GetAttributeValues(WeaponData data)

@@ -19,6 +19,8 @@ public class CustomTMPDropdown : MonoBehaviour
     private bool isInitialized = false;
     private LocalizedString localizedPlaceholder;
     private string currentPlaceholderText; // Current localized placeholder text
+    private bool isDropdownListOpen = false; // Track if dropdown list is currently open
+    private bool needsPlaceholderUpdate = false; // Flag to track if placeholder needs update
     
     // Expose dropdown properties for easy access
     public TMP_Dropdown Dropdown => dropdown;
@@ -52,6 +54,8 @@ public class CustomTMPDropdown : MonoBehaviour
                     dropdown.SetValueWithoutNotify(0);
                 }
                 // Don't set dropdown.value, keep it at 0 internally but hide checkmarks
+                // Mark that we need to update placeholder if list opens
+                needsPlaceholderUpdate = true;
             }
             else
             {
@@ -96,8 +100,9 @@ public class CustomTMPDropdown : MonoBehaviour
                     currentPlaceholderText = placeholderText; // Fallback
                 }
             }
-            catch
+            catch (System.Exception e)
             {
+                Debug.LogWarning($"CustomTMPDropdown: Failed to get localized placeholder text. Using fallback. Error: {e.Message}");
                 currentPlaceholderText = placeholderText; // Fallback
             }
         }
@@ -111,6 +116,9 @@ public class CustomTMPDropdown : MonoBehaviour
         
         // Subscribe to dropdown's value changes
         dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+        
+        // Subscribe to dropdown show/hide events to optimize LateUpdate
+        // TMP_Dropdown doesn't have direct events, so we'll use a more efficient approach
         
         if (showPlaceholderOnStart)
         {
@@ -133,6 +141,7 @@ public class CustomTMPDropdown : MonoBehaviour
         if (internalValue == -1 && dropdown != null && dropdown.captionText != null)
         {
             dropdown.captionText.text = currentPlaceholderText;
+            needsPlaceholderUpdate = true;
         }
     }
     
@@ -155,9 +164,9 @@ public class CustomTMPDropdown : MonoBehaviour
                     dropdown.options[i].text = localizedText;
                 }
             }
-            catch
+            catch (System.Exception e)
             {
-                // Keep original text if localization fails
+                Debug.LogWarning($"CustomTMPDropdown: Failed to localize dropdown option '{levelKeys[i]}'. Keeping original text. Error: {e.Message}");
             }
         }
     }
@@ -166,17 +175,38 @@ public class CustomTMPDropdown : MonoBehaviour
     {
         if (!isInitialized || dropdown == null) return;
         
-        // If in unselected state, maintain placeholder text and hide checkmarks
-        if (internalValue == -1)
+        // Only run expensive checks when dropdown list is actually open
+        // Check if dropdown list exists and is active (more efficient than running every frame)
+        Transform list = dropdown.transform.Find("Dropdown List");
+        if (list == null)
         {
-            // Keep placeholder text visible
-            if (dropdown.captionText != null && dropdown.captionText.text != currentPlaceholderText)
+            var parent = dropdown.transform.parent;
+            if (parent != null)
             {
-                dropdown.captionText.text = currentPlaceholderText;
+                list = parent.Find("Dropdown List");
             }
+        }
+        
+        bool listIsOpen = list != null && list.gameObject.activeInHierarchy;
+        
+        // Only update if list state changed or if we need to maintain placeholder
+        if (listIsOpen != isDropdownListOpen || needsPlaceholderUpdate)
+        {
+            isDropdownListOpen = listIsOpen;
+            needsPlaceholderUpdate = false;
             
-            // Hide checkmarks when the runtime list is open
-            HideAllCheckmarks();
+            // If in unselected state and list is open, maintain placeholder text and hide checkmarks
+            if (internalValue == -1 && listIsOpen)
+            {
+                // Keep placeholder text visible
+                if (dropdown.captionText != null && dropdown.captionText.text != currentPlaceholderText)
+                {
+                    dropdown.captionText.text = currentPlaceholderText;
+                }
+                
+                // Hide checkmarks when the runtime list is open
+                HideAllCheckmarks();
+            }
         }
     }
     

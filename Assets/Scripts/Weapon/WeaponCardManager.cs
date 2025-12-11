@@ -34,7 +34,8 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		SetMaxLevelForAllWeapons();
 
 		// Use shared container-finding logic (Scroll View/Viewport/Content)
-		SetupCardContainer();
+		// Pass the cached canvas to avoid duplicate lookup
+		SetupCardContainer(canvas);
 
 		SpawnDisplayAndData();
 		GenerateWeaponCards();
@@ -42,8 +43,20 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 
 	private void SpawnDisplayAndData()
 	{
+		// Clean up existing instances first to prevent memory leaks
+		if (instantiatedDisplay != null)
+		{
+			Destroy(instantiatedDisplay.gameObject);
+			instantiatedDisplay = null;
+		}
+		if (instantiatedData != null)
+		{
+			Destroy(instantiatedData.gameObject);
+			instantiatedData = null;
+		}
+
 		// Spawn weapon card display in canvas (respects prefab position)
-		if (weaponCardDisplayPrefab != null && canvas != null)
+		if (weaponCardDisplayPrefab != null)
 		{
 			GameObject displayInstance = Instantiate(weaponCardDisplayPrefab, canvas.transform);
 			// Keep prefab's position by not modifying RectTransform
@@ -59,7 +72,7 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		}
 
 		// Spawn weapon card data in canvas (respects prefab position)
-		if (weaponCardDataPrefab != null && canvas != null)
+		if (weaponCardDataPrefab != null)
 		{
 			GameObject dataInstance = Instantiate(weaponCardDataPrefab, canvas.transform);
 			// Keep prefab's position by not modifying RectTransform
@@ -101,7 +114,12 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		weaponData.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
 
 		weaponsData.Add(weaponData);
-		SpawnSingleCard(weaponCardSelectionPrefab, weaponData, weaponsData.Count - 1);
+		WeaponCardSelection newCard = SpawnSingleCard(weaponCardSelectionPrefab, weaponData, weaponsData.Count - 1);
+		if (newCard == null)
+		{
+			Debug.LogWarning($"WeaponCardManager: Failed to spawn card for weapon '{weaponData.WeaponName}'. Rolling back data addition.");
+			weaponsData.RemoveAt(weaponsData.Count - 1); // Rollback if spawn failed
+		}
 	}
 
 	// Set max level for all weapons in the list using the static default value
@@ -109,10 +127,7 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 	{
 		foreach (WeaponData weapon in weaponsData)
 		{
-			if (weapon != null)
-			{
-				weapon.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
-			}
+			weapon.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
 		}
 	}
 
@@ -121,16 +136,26 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		ClearSpawnedCards();
 	}
 
+
 	private void OnDestroy()
 	{
+		if (isQuitting)
+		{
+			// Skip cleanup during application quit
+			return;
+		}
+
 		// Clean up instantiated display and data objects
-		if (instantiatedDisplay != null)
+		// FIXED: Added null checks for gameObject and clear references to prevent memory leaks
+		if (instantiatedDisplay != null && instantiatedDisplay.gameObject != null)
 		{
 			Destroy(instantiatedDisplay.gameObject);
+			instantiatedDisplay = null;
 		}
-		if (instantiatedData != null)
+		if (instantiatedData != null && instantiatedData.gameObject != null)
 		{
 			Destroy(instantiatedData.gameObject);
+			instantiatedData = null;
 		}
 	}
 
@@ -140,49 +165,51 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 		GenerateWeaponCards();
 	}
 
-	private void OnValidate()
+#if UNITY_EDITOR
+	protected override void OnValidate()
 	{
 		// Set the static default max level in WeaponData
 		WeaponData.DefaultWeaponMaxLv = weaponMaxLv;
-
+		
 		// Set max level for all weapons when weaponMaxLv changes
 		SetMaxLevelForAllWeapons();
-
-		// Auto-generate test weapons based on numberOfWeapons, preserving existing images
-		if (weaponsData.Count != numberOfWeapons)
-		{
-			// Preserve existing WeaponData (with images) when possible
-			List<WeaponData> preservedData = new List<WeaponData>(weaponsData);
-			weaponsData.Clear();
-			
-			for (int i = 0; i < numberOfWeapons; i++)
-			{
-				// If we have preserved data for this index, reuse it (preserves images)
-				if (i < preservedData.Count && preservedData[i] != null)
-				{
-					weaponsData.Add(preservedData[i]);
-				}
-				else
-				{
-					// Create new WeaponData only for new indices
-					// Default values set to 0 - configure stats in Unity Inspector
-					WeaponData newWeapon = new WeaponData(
-						$"Weapon {i + 1}",
-						damage: 0,
-						dispersion: 0,
-						rateOfFire: 0f,
-						reloadSpeed: 0,
-						ammunition: 0
-					);
-					newWeapon.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
-					weaponsData.Add(newWeapon);
-				}
-			}
-
-			// Set max level for all weapons after generation
-			SetMaxLevelForAllWeapons();
-		}
+		
+		// Call base class validation (handles auto-generation)
+		base.OnValidate();
 	}
+	
+	protected override int GetTargetDataCount()
+	{
+		return numberOfWeapons;
+	}
+	
+	protected override IList<WeaponData> GetDataList()
+	{
+		return weaponsData;
+	}
+	
+	protected override WeaponData CreateNewDataItem(int index)
+	{
+		// Create new WeaponData only for new indices
+		// Default values set to 0 - configure stats in Unity Inspector
+		WeaponData newWeapon = new WeaponData(
+			$"Weapon {index + 1}",
+			damage: 0,
+			dispersion: 0,
+			rateOfFire: 0f,
+			reloadSpeed: 0,
+			ammunition: 0
+		);
+		newWeapon.SetMaxLevel(WeaponData.DefaultWeaponMaxLv);
+		return newWeapon;
+	}
+	
+	protected override void OnDataListResized(IList<WeaponData> dataList)
+	{
+		// Set max level for all weapons after generation
+		SetMaxLevelForAllWeapons();
+	}
+#endif
 
 	// Called by WeaponCardSelection when a card is clicked
 	public void OnWeaponCardSelected(WeaponCardSelection card)
@@ -197,7 +224,7 @@ public class WeaponCardManager : SpawnCardLogic<WeaponData, WeaponCardSelection>
 
 		// Update current selection reference
 		currentSelection = card;
-		
+
 		// Select new card (set to glowing frame)
 		currentSelection.SetSelected(true);
 

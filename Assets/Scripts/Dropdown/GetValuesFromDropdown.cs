@@ -153,8 +153,9 @@ public class GetValuesFromDropdown : MonoBehaviour
                     combinedText = $"{mapSize}\n\n{minPlayers}\n\n{GetLocalizedString("Map Info", "mapInfo.LimitedKit")}";
                 }
             }
-            catch
+            catch (System.Exception e)
             {
+                Debug.LogWarning($"GetValuesFromDropdown: Localization failed, using hardcoded fallback. Error: {e.Message}");
                 // Fallback to original hardcoded check
                 if (selectedOptionText.Contains("City Disaster (Normal)"))
                 {
@@ -189,9 +190,9 @@ public class GetValuesFromDropdown : MonoBehaviour
         {
             return UnityEngine.Localization.Settings.LocalizationSettings.StringDatabase.GetLocalizedString(tableName, entryKey);
         }
-        catch
+        catch (System.Exception e)
         {
-            Debug.LogWarning($"GetValuesFromDropdown: Could not find key '{entryKey}' in table '{tableName}'");
+            Debug.LogWarning($"GetValuesFromDropdown: Could not find key '{entryKey}' in table '{tableName}'. Error: {e.Message}");
             return entryKey; // Return key as fallback
         }
     }

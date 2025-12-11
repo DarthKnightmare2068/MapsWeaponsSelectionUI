@@ -169,8 +169,14 @@ public class MapCardUI : MonoBehaviour
 	{
 		if (mapNameText == null) return;
 
-		// Check if translation failed (shows error message)
-		if (translatedText.Contains("No translation found"))
+		// Check if translation failed - Unity Localization returns empty string or the key itself on failure
+		// Using StartsWith check for error patterns is more robust than exact string matching
+		bool translationFailed = string.IsNullOrEmpty(translatedText) || 
+			translatedText.StartsWith("No translation found") ||
+			translatedText.StartsWith("Could not find") ||
+			(mapData != null && translatedText == mapData.LocalizationKey);
+		
+		if (translationFailed)
 		{
 			// Fallback to map name if translation failed
 			mapNameText.text = mapData != null ? mapData.MapName : translatedText;
@@ -222,7 +228,7 @@ public class MapCardUI : MonoBehaviour
 
 	public void UpdateCard(MapData data)
 	{
-		// Update card with new map data (preserve existing alpha)
-		Initialize(data, sceneLoader, lockedCardAlpha);
+		// Update card with new map data (preserve existing alpha and warning reference)
+		Initialize(data, sceneLoader, lockedCardAlpha, warning);
 	}
 }

@@ -21,22 +21,18 @@ public class WeaponUpgrade : MonoBehaviour
 	// Upgrade using BMB currency - UI test only, no currency check
 	public bool UpgradeWithCurrency1(WeaponData weaponData)
 	{
-		if (!ValidateUpgrade(weaponData)) return false;
-
-		bool success = weaponData.Upgrade();
-		if (success)
-		{
-			// Increase currency costs for next upgrade
-			baseBMB += 500;
-			baseEWAR += 2;
-			weaponCardData?.RefreshDisplay();
-		}
-
-		return success;
+		return UpgradeWeapon(weaponData);
 	}
 
 	// Upgrade using EWAR currency - UI test only, no currency check
 	public bool UpgradeWithCurrency2(WeaponData weaponData)
+	{
+		return UpgradeWeapon(weaponData);
+	}
+
+	// FIXED: Extracted common upgrade logic to eliminate code duplication
+	// Shared upgrade logic for both currency types
+	private bool UpgradeWeapon(WeaponData weaponData)
 	{
 		if (!ValidateUpgrade(weaponData)) return false;
 
