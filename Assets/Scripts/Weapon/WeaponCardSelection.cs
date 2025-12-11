@@ -16,7 +16,8 @@ public class WeaponCardSelection : MonoBehaviour
 	[SerializeField] private GameObject normalFrame; // Normal frame (shown when not selected)
 	[SerializeField] private GameObject glowingFrame; // Glowing frame (shown when selected)
 
-	private TextMeshProUGUI weaponNameText;
+	// Note: weaponNameText is optional - only used if the card prefab has a name display
+	[SerializeField] private TextMeshProUGUI weaponNameText;
 	private WeaponData weaponData;
 	private WeaponCardManager manager;
 	private bool isSelected = false;

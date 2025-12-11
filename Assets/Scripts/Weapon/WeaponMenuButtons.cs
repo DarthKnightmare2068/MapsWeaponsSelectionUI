@@ -37,6 +37,7 @@ public class WeaponMenuButtons : MonoBehaviour
 		// Auto-find SceneLoader if not assigned
 		if (sceneLoader == null)
 		{
+			Debug.LogWarning("WeaponMenuButtons: SceneLoader not assigned in Inspector. Using expensive FindFirstObjectByType as fallback. Please assign in Inspector for better performance.");
 			sceneLoader = FindFirstObjectByType<SceneLoader>();
 		}
 		
@@ -143,9 +144,9 @@ public class WeaponMenuButtons : MonoBehaviour
 				backButtonText.text = initialText;
 			}
 		}
-		catch
+		catch (System.Exception e)
 		{
-			// Keep original text if localization fails
+			Debug.LogWarning($"WeaponMenuButtons: Failed to get localized back button text. Keeping original. Error: {e.Message}");
 		}
 	}
 	

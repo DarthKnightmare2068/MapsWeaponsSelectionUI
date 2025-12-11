@@ -62,9 +62,9 @@ public static class LocalizationManager
 		{
 			return LocalizationSettings.StringDatabase.GetLocalizedString(tableName, entryKey);
 		}
-		catch
+		catch (System.Exception e)
 		{
-			Debug.LogWarning($"LocalizationManager: Could not find key '{entryKey}' in table '{tableName}'");
+			Debug.LogWarning($"LocalizationManager: Could not find key '{entryKey}' in table '{tableName}'. Error: {e.Message}");
 			return entryKey; // Return key as fallback
 		}
 	}
@@ -104,6 +104,8 @@ public static class LocalizationManager
 		if (locale != null)
 		{
 			LocalizationSettings.SelectedLocale = locale;
+			// Invalidate cached attribute names when locale changes
+			WeaponData.InvalidateAttributeNamesCache();
 			Debug.Log($"LocalizationManager: Locale changed to '{localeCode}'");
 		}
 		else

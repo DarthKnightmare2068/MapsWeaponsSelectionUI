@@ -3,33 +3,45 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-	// Load specific scenes (for button OnClick events)
+	// NOTE: The following wrapper methods exist for Unity button OnClick events
+	// Unity's Inspector can only call methods with specific signatures (no parameters or single parameter)
+	// These methods provide convenient pre-configured scene loading for UI buttons
+	// For programmatic use, prefer LoadSceneByName() or LoadSceneWithLevelCheck()
+
+	// Load the main menu scene. Used by Unity button events.
 	public void LoadMenu()
 	{
 		SceneManager.LoadScene("Menu");
 	}
 
+	// Load the map menu scene. Used by Unity button events.
 	public void LoadMapMenu()
 	{
 		SceneManager.LoadScene("Map Menu");
 	}
 
+	// Load Map 1 scene directly. Used by Unity button events.
+	// WARNING: Bypasses level selection and weapon menu flow.
 	public void LoadMap1()
 	{
 		SceneManager.LoadScene("Map_1");
 	}
 
+	// Load Map 2 scene directly. Used by Unity button events.
+	// WARNING: Bypasses level selection and weapon menu flow.
 	public void LoadMap2()
 	{
 		SceneManager.LoadScene("Map_2");
 	}
 
+	// Load Map 3 scene directly. Used by Unity button events.
+	// WARNING: Bypasses level selection and weapon menu flow.
 	public void LoadMap3()
 	{
 		SceneManager.LoadScene("Map_3");
 	}
 
-	// Generic method to load any scene by name
+	// Load any scene by name. Preferred method for programmatic scene loading.
 	public void LoadSceneByName(string sceneName)
 	{
 		if (!string.IsNullOrEmpty(sceneName))
@@ -37,10 +49,10 @@ public class SceneLoader : MonoBehaviour
 			SceneManager.LoadScene(sceneName);
 		}
 	}
-	
-	// Load scene with level selection check (for play buttons on map cards)
-	// This method checks if a level is selected before loading
-	// NOTE: When called from Map Menu, this will go through GameStartService which loads Weapon Menu
+
+	// Load a scene with level selection validation. Used by map card play buttons.
+	// This method validates level selection and routes through Weapon Menu.
+	// NOTE: When called from Map Menu, this loads Weapon Menu instead of the map scene directly.
 	public void LoadSceneWithLevelCheck(string sceneName)
 	{
 		// Try to find MapCardUI in parent hierarchy
@@ -52,11 +64,11 @@ public class SceneLoader : MonoBehaviour
 			mapCardUI.OnPlayButtonClicked();
 			return;
 		}
-		
+
 		// If no MapCardUI found, this method cannot proceed properly
 		// Map card play buttons should always have MapCardUI in their hierarchy
 		Debug.LogWarning($"SceneLoader.LoadSceneWithLevelCheck: MapCardUI not found! Cannot proceed with proper flow. Scene: {sceneName}");
-		
+
 		// Fallback: Try to use GameStartService directly if we can locate required pieces
 		// This is a minimal fallback for edge cases, but should not be used in normal flow
 		CustomTMPDropdown dropdown = GetComponentInParent<CustomTMPDropdown>();
@@ -75,26 +87,29 @@ public class SceneLoader : MonoBehaviour
 				return;
 			}
 		}
-		
+
 		// WARNING: Direct scene load bypasses Weapon Menu flow
 		// This should only happen in edge cases where MapCardUI is not available
 		Debug.LogWarning($"SceneLoader.LoadSceneWithLevelCheck: Bypassing Weapon Menu flow! Directly loading: {sceneName}");
 		LoadSceneByName(sceneName);
 	}
-	
-	// Load Map1 with level check
+
+	// Load Map 1 with level selection validation. Used by Unity button events.
+	// Routes through Weapon Menu for proper game flow.
 	public void LoadMap1WithLevelCheck()
 	{
 		LoadSceneWithLevelCheck("Map_1");
 	}
-	
-	// Load Map2 with level check
+
+	// Load Map 2 with level selection validation. Used by Unity button events.
+	// Routes through Weapon Menu for proper game flow.
 	public void LoadMap2WithLevelCheck()
 	{
 		LoadSceneWithLevelCheck("Map_2");
 	}
-	
-	// Load Map3 with level check
+
+	// Load Map 3 with level selection validation. Used by Unity button events.
+	// Routes through Weapon Menu for proper game flow.
 	public void LoadMap3WithLevelCheck()
 	{
 		LoadSceneWithLevelCheck("Map_3");

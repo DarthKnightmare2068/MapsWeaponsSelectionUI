@@ -1,6 +1,9 @@
 using UnityEngine;
 
-// Static manager to store selected map information between scenes
+// Static manager to store selected map information between scenes.
+// WARNING: This data only persists during the current game session.
+// It will be lost when the application is closed/restarted.
+// If you need persistence across sessions, use PlayerPrefs or save to file.
 public static class MapSelectionManager
 {
 	private static string selectedMapSceneName;

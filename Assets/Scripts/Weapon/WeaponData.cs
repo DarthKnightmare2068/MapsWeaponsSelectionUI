@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -24,19 +25,42 @@ public class WeaponData
 		{ WeaponAttribute.Ammunition, "weaponInfo.Ammunition" }
 	};
 
+	// Cached dictionary to store attribute names (localized)
+	// Cache is invalidated when locale changes to avoid unnecessary allocations
+	private static Dictionary<WeaponAttribute, string> cachedAttributeNames;
+	private static string cachedLocaleCode;
+
 	// Dictionary to store attribute names (localized)
-	// Always fetches fresh localized strings to support runtime locale changes
+	// Cached for performance - automatically refreshes when locale changes
 	public static Dictionary<WeaponAttribute, string> AttributeNames
 	{
 		get
 		{
-			var names = new Dictionary<WeaponAttribute, string>();
-			foreach (var kvp in AttributeLocalizationKeys)
+			string currentLocale = LocalizationSettings.SelectedLocale != null 
+				? LocalizationSettings.SelectedLocale.Identifier.Code 
+				: "en-US";
+
+			// Refresh cache if locale changed or cache is null
+			if (cachedAttributeNames == null || cachedLocaleCode != currentLocale)
 			{
-				names[kvp.Key] = LocalizationManager.GetWeaponInfoSync(kvp.Value);
+				cachedAttributeNames = new Dictionary<WeaponAttribute, string>();
+				foreach (var kvp in AttributeLocalizationKeys)
+				{
+					cachedAttributeNames[kvp.Key] = LocalizationManager.GetWeaponInfoSync(kvp.Value);
+				}
+				cachedLocaleCode = currentLocale;
 			}
-			return names;
+
+			return cachedAttributeNames;
 		}
+	}
+
+	// Public method to invalidate the cache (call when locale changes)
+	// This is called automatically when locale changes, but can be called manually if needed
+	public static void InvalidateAttributeNamesCache()
+	{
+		cachedAttributeNames = null;
+		cachedLocaleCode = null;
 	}
 
 	// Dictionary to store attribute format strings
@@ -112,15 +136,25 @@ public class WeaponData
 	}
 
 	// Upgrade method: applies upgrade stat changes
+	// Note: These are placeholder upgrade values for UI testing. Adjust for actual game balance.
 	public bool Upgrade()
 	{
 		if (!CanUpgrade) return false;
 
 		// Apply upgrade stat changes
+		// Damage: +50% per upgrade (multiplicative)
 		damage *= 1.5f;
-		dispersion = Mathf.Max(0f, dispersion - 0.1f); // Prevent negative dispersion
-		rateOfFire = Mathf.Max(0f, rateOfFire - 2f); // Reduce rate of fire by 2 (lower is better/faster)
-		reloadSpeed = Mathf.Max(0f, reloadSpeed - 0.1f); // Prevent negative reload speed
+		// Dispersion: -0.1 per upgrade (lower = more accurate, clamped to 0)
+		dispersion = Mathf.Max(0f, dispersion - 0.1f);
+		// Rate of Fire: This value represents firing interval in some unit - lower = faster firing
+		// If using RPM (rounds per minute), this logic should be ADDING not subtracting
+		// TODO: Clarify rate of fire unit and adjust upgrade logic accordingly
+		rateOfFire = Mathf.Max(0f, rateOfFire - 2f);
+		// Reload Speed: This value represents reload time - lower = faster reload
+		// If this should represent reload speed (higher = faster), invert the logic
+		// TODO: Clarify reload speed semantics and adjust upgrade logic accordingly
+		reloadSpeed = Mathf.Max(0f, reloadSpeed - 0.1f);
+		// Ammunition: +1 per upgrade
 		ammunition += 1f;
 		upgradeCount++;
 
