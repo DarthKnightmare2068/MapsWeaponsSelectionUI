@@ -127,8 +127,8 @@ public class WeaponCardData : MonoBehaviour
 		{
 			// Rebuild list without LINQ to avoid allocation
 			cachedAttributeNamesList = new List<string>(WeaponData.AttributeOrder.Length);
-			Dictionary<WeaponAttribute, string> attributeNames = WeaponData.AttributeNames;
-			foreach (WeaponAttribute attr in WeaponData.AttributeOrder)
+			Dictionary<WeaponData.WeaponAttribute, string> attributeNames = WeaponData.AttributeNames;
+			foreach (WeaponData.WeaponAttribute attr in WeaponData.AttributeOrder)
 			{
 				cachedAttributeNamesList.Add(attributeNames[attr]);
 			}
